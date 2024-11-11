@@ -17,7 +17,7 @@ export const Home = () => {
             <NextTrip />
             <HomeGuestsDiv />
             <Degination />
-            <Discover />
+            {/* <Discover /> */}
             <FooterBlue />
         </div>
     </>

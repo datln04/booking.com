@@ -135,7 +135,7 @@ export const Availability = () => {
 
           <DataDiv>
             <p>Reservation Time</p>
-            <h1>7:00 PM</h1>
+            <h1>7:30 PM</h1>
           </DataDiv>
         </FlexDiv>
 

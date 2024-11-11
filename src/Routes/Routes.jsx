@@ -7,6 +7,12 @@ import { Home } from "./Home"
 import { Restaurant } from "./Restaurant"
 import { SearchRestaurantPage } from "../Components/Restaurant/SearchPage/SearchRestaurantPage"
 import { RestaurantDetails } from "../Components/Restaurant/RestaurantDetail/Components/RestaurantDetail"
+import { SearchCarPage } from "../Components/Car/SearchPage/SearchCarPage"
+import Car from "./Car"
+import CarDetail from "../Components/Car/CarDetail/CarDetail"
+import Attraction from "./Attraction"
+import { SearchAttractionPage } from "../Components/Attraction/SearchPage/SearchAttractionPage"
+import AttractionDetail from "../Components/Attraction/AttractionDetail/AttractionDetail"
 
 export const Routes = () => {
 
@@ -15,14 +21,14 @@ export const Routes = () => {
             <Route exact path="/">
                 <Home />
             </Route>
-            
+
             <Route path="/restaurant/:id">
                 <RestaurantDetails />
             </Route>
             <Route path="/restaurant">
                 <Restaurant />
             </Route>
-            
+
             <Route exact path="/login">
                 <Login />
             </Route>
@@ -37,6 +43,30 @@ export const Routes = () => {
 
             <Route path="/search/:id">
                 <HotelDetails />
+            </Route>
+
+            <Route exact path="/car">
+                <Car />
+            </Route>
+
+            <Route exact path="/searchCar">
+                <SearchCarPage />
+            </Route>
+
+            <Route path="/car/:id">
+                <CarDetail />
+            </Route>
+
+            <Route exact path="/attraction">
+                <Attraction />
+            </Route>
+
+            <Route exact path="/searchAttraction">
+                <SearchAttractionPage />
+            </Route>
+
+            <Route path="/attraction/:id">
+                <AttractionDetail />
             </Route>
 
         </Switch>

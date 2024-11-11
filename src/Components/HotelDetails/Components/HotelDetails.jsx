@@ -10,6 +10,7 @@ import { SearchRequest } from '../../SearchPage/SearchRequest'
 import { useParams } from 'react-router'
 import { HotelData } from '../../../Utils/HotelData'
 import { useState } from 'react'
+import Review from '../../Review/Review'
 
 const Wrapper = styled.div`
 display: flex;
@@ -67,7 +68,7 @@ export const HotelDetails = () => {
                     <AllIcons />
 
                     <Availability />
-
+                    <Review />
 
 
                 </Div>

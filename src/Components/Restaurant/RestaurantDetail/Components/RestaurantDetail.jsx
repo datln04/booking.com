@@ -10,6 +10,7 @@ import { restaurants } from '../../../../Utils/mock'
 import FooterBlue from '../../../Footer/FooterBlue'
 import { Navbar } from '../../../Navbar/Navbar'
 import { SearchRestaurantSideNav } from '../../SearchNav/SearchRestaurantSideNav'
+import Review from '../../../Review/Review'
 
 const Wrapper = styled.div`
 display: flex;
@@ -65,6 +66,7 @@ export const RestaurantDetails = () => {
                     />
                     <AllIcons />
                     <Availability />
+                    <Review />
                 </Div>
             </Wrapper>
             <FooterBlue />
