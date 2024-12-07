@@ -74,7 +74,7 @@ export const SearchCarPage = () => {
                     />
                 </div>
 
-                <div style={{width: '90%'}}>
+                <div style={{width: '90%', paddingLeft: '20px'}}>
                     {filteredData.map((car) => (
                         <CarDataComponent
                             key={car.id}

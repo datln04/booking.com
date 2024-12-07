@@ -20,7 +20,7 @@ export const CarDataComponent = ({
   features,
   isBooking
 }) => {
-  const lab = "See More >";
+  const lab = "Chi tiết >";
   return (
     <div className={styles.maindiv}>
       <div className={styles.imgdiv}>
@@ -41,12 +41,12 @@ export const CarDataComponent = ({
         </div>
 
         <h5 style={{ color: "green", padding: "0", marginTop: "6px", marginBottom: "0" }}>
-          Features: {features.join(", ")}
+          Tính năng: {features.join(", ")}
         </h5>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ marginTop: "10px", textAlign: "right" }}>
-          <p><FontAwesomeIcon icon={faDollarSign} /> {`Rental Price Per Day: `}<p>{`$${rentalPricePerDay}`}</p></p>
+          <p><FontAwesomeIcon icon={faDollarSign} /> {`Giá thuê 1 ngày: `}<p>{`$${rentalPricePerDay}`}</p></p>
           {!isBooking && <Link to={`/car/${id}`}>
             <button style={{ backgroundColor: "#0071C2", color: "white", border: "none", borderRadius: "3px", padding: "15px", marginTop: "10px", cursor: "pointer" }}>
               {lab}

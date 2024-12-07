@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './SearchCarRequest.module.css';
 import { Calendar } from 'react-calendar';
 import { Link } from '@material-ui/core';
@@ -6,6 +6,8 @@ import styled from "styled-components"
 import { useThrottle } from "use-throttle"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { Searchbar } from '../../SearchDeals/Suggestion/Searchbar';
+import { fetchData } from '../../../Utils/Service';
 
 function InputField({ id, type, value, onChange, placeholder, className }) {
   return (
@@ -112,10 +114,14 @@ function SearchCarRequest() {
   const [dropoffTime, setDropoffTime] = useState('');
   const [showPickupCalendar, setShowPickupCalendar] = useState(false);
   const [showDropoffCalendar, setShowDropoffCalendar] = useState(false);
+  const [query, setQuery] = React.useState("");
+  const [, setLoading] = React.useState(false);
+  const [suggestions, setSuggestions] = React.useState([]);
+  const [countries, setCountries] = useState([])
+
 
   const handleChange = (event) => {
     const { id, value } = event.target;
-    console.log('id: ', id, 'value: ', value);
 
     switch (id) {
       case 'location':
@@ -159,13 +165,35 @@ function SearchCarRequest() {
     setLocation('');
   }
 
+  useEffect(() => {
+    if (query === "") {
+      setSuggestions([]);
+    } else {
+      let out = countries
+        .filter((item) =>
+          item.name.toLowerCase().indexOf(query.toLocaleLowerCase()) !== -1 ? true : false
+        )
+        .map((item) => item.name);
+      setSuggestions(out);
+      console.log(out);
+      // setLoading(false);
+    }
+  }, [query]);
+
+  useEffect(() => {
+    const getData = async () => {
+      await fetchData('/Provinces').then((response) => setCountries(response)).catch((e) => console.log(e));
+    }
+    getData()
+  }, [])
+
   return (
     <div className={styles.main}>
       <div className={styles.searchDealsContainer}>
         <div></div>
         <div className={styles.uppertext}>
-          <h3>Car rentals for any kind of trip</h3>
-          <p>Great cars at great prices from the biggest rental companies</p>
+          <h3>Cho thuê xe cho mọi loại chuyến đi</h3>
+          <p>Những chiếc xe tuyệt vời với giá cả tuyệt vời từ các công ty cho thuê xe lớn nhất</p>
         </div>
         <div className={styles.searchDealsBars}>
           <div className={styles.search}>
@@ -173,19 +201,30 @@ function SearchCarRequest() {
               <FontAwesomeIcon icon={faSearch} />
             </div>
             <div className={styles.input}>
-              <SearchBarWrapper>
-                <Input id="location" onChange={handleChange} value={location} placeholder="Pickup location?" />
+              {/* <SearchBarWrapper>
+                <Input id="location" onChange={handleChange} value={location} placeholder="Chọn địa điểm lấy xe?" />
                 <RightSide>
                   {location && <div onClick={handleClear}><p>x</p></div>}
                 </RightSide>
-              </SearchBarWrapper>
+              </SearchBarWrapper> */}
+              <Searchbar
+                className={styles.suggestions}
+                value={query}
+                setQuery={setQuery}
+                loading={false}
+                setLoading={setLoading}
+                suggestions={suggestions}
+                setSuggestions={setSuggestions}
+                onChange={(value) => setQuery(value)}
+                placeholder={"Chọn địa điểm lấy xe?"}
+              />
             </div>
           </div>
           <div className={styles.calender}>
             <div style={{ display: 'flex', width: '100%' }}>
               <svg fill="#BDBDBD" focusable="false" height="20" role="presentation" width="20" viewBox="0 0 128 128"><path d="m112 16h-16v-8h-8v8h-48v-8h-8v8h-16c-4.4 0-8 3.9-8 8.7v86.6c0 4.8 3.6 8.7 8 8.7h96c4.4 0 8-3.9 8-8.7v-86.6c0-4.8-3.6-8.7-8-8.7zm0 95.3a1.1 1.1 0 0 1 -.2.7h-95.6a1.1 1.1 0 0 1 -.2-.7v-71.3h96zm-68-43.3h-12v-12h12zm0 28h-12v-12h12zm26-28h-12v-12h12zm0 28h-12v-12h12zm26 0h-12v-12h12zm0-28h-12v-12h12z" fillRule="evenodd"></path></svg>
               <div className={styles.calendarInput} onClick={() => setShowPickupCalendar(!showPickupCalendar)}>
-                {pickupDate ? pickupDate.toDateString() : 'Pickup Date'}
+                {pickupDate ? pickupDate.toDateString() : 'Ngày lấy xe'}
               </div>
             </div>
             {showPickupCalendar && (
@@ -197,7 +236,7 @@ function SearchCarRequest() {
             )}
           </div>
           <div className={styles.arrivalTime}>
-            <label>Pickup Time: </label>
+            <label>Giờ lấy xe: </label>
             <InputField
               id="pickupTime"
               className={styles.arrivalTimeInput}
@@ -211,7 +250,7 @@ function SearchCarRequest() {
             <div style={{ display: 'flex', width: '100%' }}>
               <svg fill="#BDBDBD" focusable="false" height="20" role="presentation" width="20" viewBox="0 0 128 128"><path d="m112 16h-16v-8h-8v8h-48v-8h-8v8h-16c-4.4 0-8 3.9-8 8.7v86.6c0 4.8 3.6 8.7 8 8.7h96c4.4 0 8-3.9 8-8.7v-86.6c0-4.8-3.6-8.7-8-8.7zm0 95.3a1.1 1.1 0 0 1 -.2.7h-95.6a1.1 1.1 0 0 1 -.2-.7v-71.3h96zm-68-43.3h-12v-12h12zm0 28h-12v-12h12zm26-28h-12v-12h12zm0 28h-12v-12h12zm26 0h-12v-12h12zm0-28h-12v-12h12z" fillRule="evenodd"></path></svg>
               <div className={styles.calendarInput} onClick={() => setShowDropoffCalendar(!showDropoffCalendar)}>
-                {dropoffDate ? dropoffDate.toDateString() : 'DropOff Date'}
+                {dropoffDate ? dropoffDate.toDateString() : 'Ngày trả xe'}
               </div>
             </div>
             {showDropoffCalendar && (
@@ -223,7 +262,7 @@ function SearchCarRequest() {
             )}
           </div>
           <div className={styles.arrivalTime}>
-            <label>DropOff Time: </label>
+            <label>Giờ trả xe: </label>
             <InputField
               id="dropoffTime"
               className={styles.arrivalTimeInput}
@@ -235,7 +274,7 @@ function SearchCarRequest() {
           </div>
           <div className={styles.button}>
             <a href="/searchRestaurant">
-              <button onClick={handleSubmit}>Search</button>
+              <button onClick={handleSubmit}>Tìm kiếm</button>
             </a>
           </div>
         </div>

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Navbar } from '../Navbar/Navbar';
-import { createData, loginUser } from '../../Utils/Service';
+import ImageUpload from '../ImageUpload/ImageUpload';
+import { uploadImage } from '../../Utils/util';
+import { createData } from '../../Utils/Service';
 
 const Container = styled.div`
   display: flex;
@@ -52,12 +54,19 @@ const LoadingIndicator = styled.div`
   color: #007bff;
 `;
 
-const Login = () => {
+const Register = () => {
   const [formData, setFormData] = useState({
-    usernameOrEmail: '',
-    password: ''
+    id: 0,
+    username: '',
+    passwordHash: '',
+    email: '',
+    fullName: '',
+    role: 'Customer',
+    image: '',
+    isDeleted: false
   });
 
+  const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -71,11 +80,31 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    const currentDate = new Date().toISOString();
 
-    createData('/Auth/login', formData).then((resp) => {
+    let imageUrl = '';
+
+    if (image) {
+      const formData = new FormData();
+      try {
+        imageUrl = await uploadImage(formData, image);
+      } catch (error) {
+        console.log(error);
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    const userToSave = {
+      ...formData,
+      image: imageUrl,
+      createdDate: currentDate,
+      lastLoginDate: currentDate
+    };
+
+    createData('/Auth/register', userToSave).then(() => {
       setIsLoading(false);
-      localStorage.setItem('login', JSON.stringify(resp));
-      window.location.href = '/';
+      window.location.href = '/login';
     }).catch(() => {
       setIsLoading(false);
     });
@@ -88,19 +117,34 @@ const Login = () => {
         <Form onSubmit={handleSubmit}>
           <Input
             type="text"
-            name="usernameOrEmail"
-            placeholder="Username or Email"
-            value={formData.usernameOrEmail}
+            name="username"
+            placeholder="Username"
+            value={formData.username}
             onChange={handleChange}
           />
           <Input
             type="password"
-            name="password"
+            name="passwordHash"
             placeholder="Password"
-            value={formData.password}
+            value={formData.passwordHash}
             onChange={handleChange}
           />
-          <Button type="submit" disabled={isLoading}>Login</Button>
+          <Input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <Input
+            type="text"
+            name="fullName"
+            placeholder="Full Name"
+            value={formData.fullName}
+            onChange={handleChange}
+          />
+          <ImageUpload setImage={setImage} imageUrl={null} />
+          <Button type="submit" disabled={isLoading}>Submit</Button>
           {isLoading && <LoadingIndicator>Loading...</LoadingIndicator>}
         </Form>
       </Container>
@@ -108,4 +152,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

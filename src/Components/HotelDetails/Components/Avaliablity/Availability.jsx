@@ -134,62 +134,47 @@ export const Availability = () => {
 
     return (
         <Div>
-
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <H1>Availability</H1>
+                <H1>Khả dụng</H1>
                 <Tag>
-                    <img src="https://cf.bstatic.com/static/img/bpg/bpg_logo_retina/b4785e81dfbdb3907f75887373d5920d3dc3b245.png" alt="tag" />
-                    <p>We Price Match</p>
-
+                    <img
+                        src="https://cf.bstatic.com/static/img/bpg/bpg_logo_retina/b4785e81dfbdb3907f75887373d5920d3dc3b245.png"
+                        alt="tag"
+                    />
+                    <p>Chúng tôi đảm bảo giá tốt nhất</p>
                 </Tag>
-
             </div>
 
             <Cont>
-
                 <FelxDiv>
                     <DataDiv>
-                        <p>Check-in data</p>
-                        <h1>Tue, Aug 31, 2021</h1>
-                        <Last>From 2:00 PM</Last>
-
+                        <p>Ngày nhận phòng</p>
+                        <h1>Thứ Ba, 31 Tháng 8, 2021</h1>
+                        <Last>Từ 2:00 chiều</Last>
                     </DataDiv>
                     <Line />
 
                     <DataDiv>
-                        <p>Check-out data</p>
-                        <h1>Tue, spet 21, 2021</h1>
-                        <Last>2-week stay</Last>
-
+                        <p>Ngày trả phòng</p>
+                        <h1>Thứ Ba, 21 Tháng 9, 2021</h1>
+                        <Last>Lưu trú 2 tuần</Last>
                     </DataDiv>
-
-
                 </FelxDiv>
 
                 <FelxDiv>
                     <DataDiv>
-                        <p>Guests</p>
-                        <h1>2 adults</h1>
-
-
+                        <p>Khách</p>
+                        <h1>2 người lớn</h1>
                     </DataDiv>
 
                     <Button onClick={handleClick}>
                         {/* <Link to="/" style={{ textDecoration: "none", color: "white" }}> */}
-                        {
-                            !reserve ? "Reserve" : "Reserved"
-                        }
-                        {/* // </Link> */}
+                        {!reserve ? "Đặt phòng" : "Đã đặt"}
+                        {/* </Link> */}
                     </Button>
                 </FelxDiv>
-
-
-
-
-
-
             </Cont>
-
         </Div>
+
     )
 }

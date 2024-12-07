@@ -1,4 +1,4 @@
-.login{
+/* .login{
     text-align: center;
     
 }
@@ -96,5 +96,58 @@
     font-weight: 700;
     font-size: 1rem;
     text-transform: capitalize;
-    /* padding-bottom: 10px; */
+} */
+.navContainer{
+    background-color:rgb(0,53,128);
+}
+.navbarUpperSection{
+    display: flex;
+    justify-content: space-between;
+    margin-right: 10%;
+    padding: 10px;
+}
+.navbarUpperSectionItems > ul{
+ display: flex;
+ list-style: none;
+ justify-content: space-between;
+}
+.inr{
+margin-top: 1.5%;
+font-weight: 500;
+font-size: 15px;
+
+}
+.indianFlag{
+   margin-left: 5%;  
+   margin-top: 1%;
+    
+}
+
+.indianFlag img{
+border-radius: 50%;
+width: 25px;
+}
+.questionIcon{
+    fill: white;
+   margin-left: 80%;  
+   margin-top:25%;
+   font-weight: 500;
+font-size: 15px;
+
+
+}
+.propertyList{
+   margin-left: 10%;  
+
+}
+.propertyList > button{
+    width: 150px;
+    border-radius: 2px;
+    color: white;
+    border: 1px solid white;
+    padding: 5%;
+    background-color: rgb(0,53,128);
+    font-weight: bold;
+    font-weight: 500;
+    font-size: 15px;
 }

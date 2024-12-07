@@ -40,7 +40,7 @@
 
 .searchDealsContainer .searchDealsBars .search {
   border: 4px solid rgb(254, 187, 2);
-  width: 25%;
+  width: 30%;
   display: flex;
   justify-content: space-between;
   align-items: center;

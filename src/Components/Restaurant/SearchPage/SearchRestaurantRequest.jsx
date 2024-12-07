@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './SearchRestaurantRequest.module.css';
 import { Calendar } from 'react-calendar';
 import { Link } from '@material-ui/core';
 import styled from "styled-components"
 import { useThrottle } from "use-throttle"
+import { fetchData } from '../../../Utils/Service';
+import { Searchbar } from '../../SearchDeals/Suggestion/Searchbar';
 
 function InputField({ id, type, value, onChange, placeholder, className }) {
   return (
@@ -117,6 +119,11 @@ function SearchRestaurantRequest() {
     numberOfPersons: '2'
   });
 
+  const [query, setQuery] = React.useState("");
+  const [, setLoading] = React.useState(false);
+  const [suggestions, setSuggestions] = React.useState([]);
+  const [countries, setCountries] = useState([])
+
   const handleChange = (event) => {
     const { id, value } = event.target;
     console.log('id: ', id, 'value: ', value);
@@ -176,6 +183,28 @@ function SearchRestaurantRequest() {
       location: ""
     }));
   }
+
+  useEffect(() => {
+    if (query === "") {
+      setSuggestions([]);
+    } else {
+      let out = countries
+        .filter((item) =>
+          item.name.toLowerCase().indexOf(query.toLocaleLowerCase()) !== -1 ? true : false
+        )
+        .map((item) => item.name);
+      setSuggestions(out);
+      console.log(out);
+      // setLoading(false);
+    }
+  }, [query]);
+
+  useEffect(() => {
+    const getData = async () => {
+      await fetchData('/Provinces').then((response) => setCountries(response)).catch((e) => console.log(e));
+    }
+    getData()
+  }, [])
   return <div className={styles.main}>
 
     <div className={styles.searchDealsContainer}>
@@ -196,7 +225,7 @@ function SearchRestaurantRequest() {
             <img src="https://cf.bstatic.com/static/img/cross_product_index/accommodation/07ca5cacc9d77a7b50ca3c424ecd606114d9be75.svg" alt="icon" />
           </div>
           <div className={styles.input}>
-            <SearchBarWrapper>
+            {/* <SearchBarWrapper>
               <Input id="location" onChange={handleChange} value={formData.location} placeholder="Where are you going?" />
               <RightSide>
                 {formData.location && <div onClick={handleClear}>
@@ -205,7 +234,18 @@ function SearchRestaurantRequest() {
                   </p>
                 </div>}
               </RightSide>
-            </SearchBarWrapper>
+            </SearchBarWrapper> */}
+            <Searchbar
+              className={styles.suggestions}
+              value={query}
+              setQuery={setQuery}
+              loading={false}
+              setLoading={setLoading}
+              suggestions={suggestions}
+              setSuggestions={setSuggestions}
+              onChange={(value) => setQuery(value)}
+              placeholder={"Chọn địa điểm cho nhà hàng?"}
+            />
           </div>
         </div>
         <div className={styles.calender}>

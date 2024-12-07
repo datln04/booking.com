@@ -40,7 +40,7 @@
 
 .searchDealsContainer .searchDealsBars .search {
   border-right: 4px solid rgb(254, 187, 2);
-  width: 25%;
+  width: 30%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -68,7 +68,7 @@
 
 .searchDealsContainer .searchDealsBars .arrivalTime {
   border-right: 4px solid rgb(254, 187, 2);
-  width: 20%;
+  width: 22%;
   display: flex;
   align-items: center;
   padding: 1%;

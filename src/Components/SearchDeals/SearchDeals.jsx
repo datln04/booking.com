@@ -1,11 +1,12 @@
 import styles from "./SearchDeals.module.css"
-import React from "react"
+import React, { useEffect } from "react"
 import Calendar from 'react-calendar';
 import { useState } from "react";
-import { countries } from "../../Utils/SuggitionItems";
+// import { countries } from "../../Utils/SuggitionItems";
 import 'react-calendar/dist/Calendar.css';
 import { Searchbar } from "./Suggestion/Searchbar";
 import { Link } from "react-router-dom";
+import { fetchData } from "../../Utils/Service";
 
 
 export const SearchDeals = () => {
@@ -17,7 +18,7 @@ export const SearchDeals = () => {
     const [selector, setSelector] = useState(false)
     const [currentMonth, currentDay, currentDayNum] = endDatePicker(initvalue.getDay(), initvalue.getMonth(), initvalue.getDate())
     const [endMonth, endDay, endDayNum] = endDatePicker(endvalue.getDay(), endvalue.getMonth(), endvalue.getDate())
-
+    const [countries, setCountries] = useState([])
     const [adults, setAdults] = useState(2)
     const [children, setChildren] = useState(0)
     const [rooms, setRooms] = useState(2)
@@ -25,22 +26,27 @@ export const SearchDeals = () => {
     const [query, setQuery] = React.useState("");
     const [, setLoading] = React.useState(false);
     const [suggestions, setSuggestions] = React.useState([]);
-    React.useEffect(() => {
+    useEffect(() => {
         if (query === "") {
             setSuggestions([]);
-        } else {
+        } else {            
             let out = countries
                 .filter((item) =>
-                    item.country.toLowerCase().indexOf(query) !== -1 ? true : false
+                    item.name.toLowerCase().indexOf(query.toLocaleLowerCase()) !== -1 ? true : false
                 )
-                .map((item) => item.country);
+                .map((item) => item.name);
             setSuggestions(out);
-            //console.log(out);
+            console.log(out);
             // setLoading(false);
         }
     }, [query]);
 
-
+    useEffect(() => {        
+        const getData = async () => {
+            await fetchData('/Provinces').then((response) => setCountries(response)).catch((e) => console.log(e));
+        }
+        getData()
+    }, [])
 
     const handleInitDate = () => {
         setInitDate(!intiDate)
@@ -104,10 +110,10 @@ export const SearchDeals = () => {
             </div>
             <div className={styles.uppertext}>
                 <h3>
-                    Find deals on hotels, homes and much more...
+                    Tìm kiếm các ưu đãi về khách sạn, nhà ở và nhiều hơn nữa...
                 </h3>
                 <p>
-                    From cosy country homes to funky city flats
+                    Từ những ngôi nhà ấm cúng ở nông thôn đến những căn hộ thành phố sành điệu
                 </p>
             </div>
             <div className={styles.searchDealsBars}>
@@ -126,6 +132,7 @@ export const SearchDeals = () => {
                             suggestions={suggestions}
                             setSuggestions={setSuggestions}
                             onChange={(value) => setQuery(value)}
+                            placeholder={"Chọn địa điểm muốn thuê phòng?"}
                         />
 
                     </div>
@@ -209,13 +216,13 @@ export const SearchDeals = () => {
                     </div>
                     <div className={styles.selectorItems} onClick={() => handleSelector()}>
                         <p>
-                            {adults} adults  .
+                            Tổng số người: {adults} -
                         </p>
+                        {/* <p>
+                            {children} Trẻ em  .
+                        </p> */}
                         <p>
-                            {children} children  .
-                        </p>
-                        <p>
-                            {rooms} rooms
+                            {rooms} Phòng
                         </p>
                     </div>
                     <div>
@@ -227,7 +234,7 @@ export const SearchDeals = () => {
                         <div className={styles.selectorDropDown}>
                             <div className={styles.adult}>
                                 <div>
-                                    <h4>Adults</h4>
+                                    <h4>Tổng số người</h4>
 
                                 </div>
                                 <div >
@@ -249,9 +256,9 @@ export const SearchDeals = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className={styles.adult}>
+                            {/* <div className={styles.adult}>
                                 <div>
-                                    <h4>Children</h4>
+                                    <h4>Trẻ em</h4>
 
                                 </div>
                                 <div >
@@ -272,10 +279,10 @@ export const SearchDeals = () => {
                                         >+</button>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className={styles.adult}>
                                 <div>
-                                    <h4>Rooms</h4>
+                                    <h4>Phòng</h4>
 
                                 </div>
                                 <div >
@@ -301,7 +308,7 @@ export const SearchDeals = () => {
                 <div className={styles.button}>
                     <Link to="/search">
 
-                        <button>Search</button>
+                        <button>Tìm kiếm</button>
                     </Link>
                 </div>
             </div>

@@ -56,7 +56,7 @@ const CarBreadcrumb = ({ location, startTime, endTime }) => {
           <Time>{endTime}</Time>
         </Block>
       </Row>
-      <WarningMessage>You need to pick up your car at {startTime}</WarningMessage>
+      <WarningMessage>Bạn cần phải lấy xe trước {startTime}</WarningMessage>
     </BreadcrumbContainer>
   );
 };

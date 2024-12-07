@@ -13,6 +13,7 @@ import CarDetail from "../Components/Car/CarDetail/CarDetail"
 import Attraction from "./Attraction"
 import { SearchAttractionPage } from "../Components/Attraction/SearchPage/SearchAttractionPage"
 import AttractionDetail from "../Components/Attraction/AttractionDetail/AttractionDetail"
+import Register from "../Components/Register/Register"
 
 export const Routes = () => {
 
@@ -31,6 +32,10 @@ export const Routes = () => {
 
             <Route exact path="/login">
                 <Login />
+            </Route>
+
+            <Route exact path="/register">
+                <Register />
             </Route>
 
             <Route exact path="/search">

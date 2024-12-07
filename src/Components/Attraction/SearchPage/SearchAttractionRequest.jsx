@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import styles from './SearchAttractionRequest.module.css';
-import { Calendar } from 'react-calendar';
-import { Link } from '@material-ui/core';
-import styled from "styled-components"
-import { useThrottle } from "use-throttle"
+import { faEarthAmericas } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEarthAmericas, faSearch } from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useState } from 'react';
+import { Calendar } from 'react-calendar';
+import styled from "styled-components";
+import { Searchbar } from '../../SearchDeals/Suggestion/Searchbar';
+import styles from './SearchAttractionRequest.module.css';
+import { fetchData } from '../../../Utils/Service';
 
 function InputField({ id, type, value, onChange, placeholder, className }) {
   return (
@@ -204,6 +204,10 @@ function SearchAttractionRequest() {
   const [selector, setSelector] = useState(false)
   const [currentMonth, currentDay, currentDayNum] = endDatePicker(initvalue.getDay(), initvalue.getMonth(), initvalue.getDate())
   const [endMonth, endDay, endDayNum] = endDatePicker(endvalue.getDay(), endvalue.getMonth(), endvalue.getDate())
+  const [query, setQuery] = React.useState("");
+  const [, setLoading] = React.useState(false);
+  const [suggestions, setSuggestions] = React.useState([]);
+  const [countries, setCountries] = useState([])
 
   const [adults, setAdults] = useState(2)
   const [children, setChildren] = useState(0)
@@ -237,13 +241,35 @@ function SearchAttractionRequest() {
     })
   }
 
+  useEffect(() => {
+    if (query === "") {
+      setSuggestions([]);
+    } else {
+      let out = countries
+        .filter((item) =>
+          item.name.toLowerCase().indexOf(query.toLocaleLowerCase()) !== -1 ? true : false
+        )
+        .map((item) => item.name);
+      setSuggestions(out);
+      console.log(out);
+      // setLoading(false);
+    }
+  }, [query]);
+
+  useEffect(() => {
+    const getData = async () => {
+      await fetchData('/Provinces').then((response) => setCountries(response)).catch((e) => console.log(e));
+    }
+    getData()
+  }, [])
+
   return (
     <div className={styles.main}>
       <div className={styles.searchDealsContainer}>
         <div></div>
         <div className={styles.uppertext}>
-          <h3>Attractions, activities, and experiences</h3>
-          <p>Discover new attractions and experiences to match your interests and travel style</p>
+          <h3>Điểm tham quan, hoạt động và trải nghiệm</h3>
+          <p>Khám phá những điểm đến và trải nghiệm phù hợp với sở thích và phong cách du lịch của bạn</p>
         </div>
         <div className={styles.searchDealsBars}>
           <div className={styles.search}>
@@ -251,19 +277,30 @@ function SearchAttractionRequest() {
               <FontAwesomeIcon icon={faEarthAmericas} />
             </div>
             <div className={styles.input}>
-              <SearchBarWrapper>
-                <Input id="location" onChange={handleChange} value={location} placeholder="Where are you going?" />
-                <RightSide>
-                  {location && <div onClick={handleClear}><p>x</p></div>}
-                </RightSide>
-              </SearchBarWrapper>
+              {/* <SearchBarWrapper>
+            <Input id="location" onChange={handleChange} value={location} placeholder="Bạn sẽ đi đâu?" />
+            <RightSide>
+              {location && <div onClick={handleClear}><p>x</p></div>}
+            </RightSide>
+          </SearchBarWrapper> */}
+              <Searchbar
+                className={styles.suggestions}
+                value={query}
+                setQuery={setQuery}
+                loading={false}
+                setLoading={setLoading}
+                suggestions={suggestions}
+                setSuggestions={setSuggestions}
+                onChange={(value) => setQuery(value)}
+                placeholder={"Chọn địa điểm du lịch?"}
+              />
             </div>
           </div>
           <div className={styles.calender}>
             <div style={{ display: 'flex', width: '100%' }}>
               <svg fill="#BDBDBD" focusable="false" height="20" role="presentation" width="20" viewBox="0 0 128 128"><path d="m112 16h-16v-8h-8v8h-48v-8h-8v8h-16c-4.4 0-8 3.9-8 8.7v86.6c0 4.8 3.6 8.7 8 8.7h96c4.4 0 8-3.9 8-8.7v-86.6c0-4.8-3.6-8.7-8-8.7zm0 95.3a1.1 1.1 0 0 1 -.2.7h-95.6a1.1 1.1 0 0 1 -.2-.7v-71.3h96zm-68-43.3h-12v-12h12zm0 28h-12v-12h12zm26-28h-12v-12h12zm0 28h-12v-12h12zm26 0h-12v-12h12zm0-28h-12v-12h12z" fillRule="evenodd"></path></svg>
               <div className={styles.calendarInput} onClick={() => setShowPickupCalendar(!showPickupCalendar)}>
-                {pickupDate ? pickupDate.toDateString() : 'Pickup Date'}
+                {pickupDate ? pickupDate.toDateString() : 'Ngày tham gia'}
               </div>
             </div>
             {showPickupCalendar && (
@@ -280,10 +317,10 @@ function SearchAttractionRequest() {
             </div>
             <div className={styles.selectorItems} onClick={() => handleSelector()}>
               <p>
-                {adults} adults  .
+                {adults} người lớn .
               </p>
               <p>
-                {children} children
+                {children} trẻ em
               </p>
             </div>
             <div>
@@ -295,15 +332,12 @@ function SearchAttractionRequest() {
               <div className={styles.selectorDropDown}>
                 <div className={styles.adult}>
                   <div>
-                    <h4>Adults</h4>
-
+                    <h4>Người lớn</h4>
                   </div>
-                  <div >
+                  <div>
                     <div className={styles.button}>
-
                       <button
                         onClick={() => handleAdults(-1)}
-
                       >-</button>
                     </div>
                     <div>
@@ -312,19 +346,16 @@ function SearchAttractionRequest() {
                     <div className={styles.button}>
                       <button
                         onClick={() => handleAdults(1)}
-
                       >+</button>
                     </div>
                   </div>
                 </div>
                 <div className={styles.adult}>
                   <div>
-                    <h4>Children</h4>
-
+                    <h4>Trẻ em</h4>
                   </div>
-                  <div >
+                  <div>
                     <div className={styles.button}>
-
                       <button
                         onClick={() => handleChildren(-1)}
                       >-</button>
@@ -333,25 +364,23 @@ function SearchAttractionRequest() {
                       <h4>{children}</h4>
                     </div>
                     <div className={styles.button}>
-
                       <button
                         onClick={() => handleChildren(1)}
-
                       >+</button>
                     </div>
                   </div>
                 </div>
               </div>}
-
           </div>
-          <div className={styles.button} style={{width: '170px', borderRight: '4px solid rgb(254, 187, 2)', borderTop: '4px solid rgb(254, 187, 2)', borderBottom: '4px solid rgb(254, 187, 2)'}}>
+          <div className={styles.button} style={{ width: '170px', borderRight: '4px solid rgb(254, 187, 2)', borderTop: '4px solid rgb(254, 187, 2)', borderBottom: '4px solid rgb(254, 187, 2)' }}>
             <a href="/searchAttraction">
-              <button>Search</button>
+              <button>Tìm kiếm</button>
             </a>
           </div>
         </div>
       </div>
     </div>
+
   );
 }
 

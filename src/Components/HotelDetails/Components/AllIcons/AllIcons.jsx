@@ -42,13 +42,13 @@ export const AllIcons = ()=>{
             <Cont>
 
                 <PoolIcon style = {styles}/>
-                <p>Outdoor pool</p>
+                <p>Hồ bơi ngoài trời</p>
 
             </Cont>
 
             <Cont>
                 <WifiIcon style = {styles} />
-                <p>Free WiFi</p>
+                <p>WiFi miễn phí</p>
                  </Cont>
             <Cont>
 
@@ -57,15 +57,15 @@ export const AllIcons = ()=>{
                 <LocalParkingIcon style = {styles}/>
                 
                 
-                <p>Free paking</p>
+                <p>Đỗ xe miễn phí</p>
                  </Cont>
             <Cont> 
                 <AcUnitIcon style = {styles}/>
-                <p>Air condition</p>
+                <p>Điều hòa không khí</p>
             </Cont>
             <Cont> 
                 <UpdateIcon style = {styles}/>
-                <p>24-hour front desk</p>
+                <p>Lễ tân 24 giờ</p>
             </Cont>
            
 

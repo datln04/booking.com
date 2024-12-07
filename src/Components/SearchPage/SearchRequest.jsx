@@ -105,17 +105,17 @@ export const SearchRequest = ({ filterSearch }) => {
     return <div className={styles.SearchRequestContainer}>
 
         <p>
-            Search
+            TÌm kiếm
         </p>
         <div className={styles.destination}>
-            <p>Destination/property name:</p>
+            <p>Địa danh / Địa điểm:</p>
             <div>
                 <svg aria-hidden="true" fill="#838181" focusable="false" height="20" role="presentation" width="20" viewBox="0 0 24 24"><path d="M17.464 6.56a8.313 8.313 0 1 1-15.302 6.504A8.313 8.313 0 0 1 17.464 6.56zm1.38-.586C16.724.986 10.963-1.339 5.974.781.988 2.9-1.337 8.662.783 13.65c2.12 4.987 7.881 7.312 12.87 5.192 4.987-2.12 7.312-7.881 5.192-12.87zM15.691 16.75l7.029 7.03a.75.75 0 0 0 1.06-1.06l-7.029-7.03a.75.75 0 0 0-1.06 1.06z"></path></svg>
-                <input type="text" placeholder="Search Your Destination City" onChange={(e) => setDestination(e.target.value)} />
+                <input type="text" placeholder="Bạn muốn đi đâu?" onChange={(e) => setDestination(e.target.value)} />
             </div>
         </div>
         <div className={styles.startDate}>
-            <p>Check-in date</p>
+            <p>Ngày nhận phòng</p>
             <div>
                 <svg aria-hidden="true" fill="#838181" focusable="false" height="20" role="presentation" width="20" viewBox="0 0 24 24"><path d="M22.502 13.5v8.25a.75.75 0 0 1-.75.75h-19.5a.75.75 0 0 1-.75-.75V5.25a.75.75 0 0 1 .75-.75h19.5a.75.75 0 0 1 .75.75v8.25zm1.5 0V5.25A2.25 2.25 0 0 0 21.752 3h-19.5a2.25 2.25 0 0 0-2.25 2.25v16.5A2.25 2.25 0 0 0 2.252 24h19.5a2.25 2.25 0 0 0 2.25-2.25V13.5zm-23.25-3h22.5a.75.75 0 0 0 0-1.5H.752a.75.75 0 0 0 0 1.5zM7.502 6V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0zm10.5 0V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0z"></path></svg>
                 <input type="text" placeholder="Mon 30 Aug" onClick={handleInitDate} value={`${currentDay} ${currentDayNum} ${currentMonth}`} />
@@ -123,7 +123,7 @@ export const SearchRequest = ({ filterSearch }) => {
             </div>
         </div>
         <div className={styles.endDate}>
-            <p>Check-out date</p>
+            <p>Ngày trả phòng</p>
             <div>
                 <svg aria-hidden="true" fill="#838181" focusable="false" height="20" role="presentation" width="20" viewBox="0 0 24 24"><path d="M22.502 13.5v8.25a.75.75 0 0 1-.75.75h-19.5a.75.75 0 0 1-.75-.75V5.25a.75.75 0 0 1 .75-.75h19.5a.75.75 0 0 1 .75.75v8.25zm1.5 0V5.25A2.25 2.25 0 0 0 21.752 3h-19.5a2.25 2.25 0 0 0-2.25 2.25v16.5A2.25 2.25 0 0 0 2.252 24h19.5a2.25 2.25 0 0 0 2.25-2.25V13.5zm-23.25-3h22.5a.75.75 0 0 0 0-1.5H.752a.75.75 0 0 0 0 1.5zM7.502 6V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0zm10.5 0V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0z"></path></svg>
                 <input type="text" placeholder="Mon 30 Aug 2021" onClick={handleEndDate} value={`${endDay} ${endDayNum} ${endMonth}`} />
@@ -132,7 +132,7 @@ export const SearchRequest = ({ filterSearch }) => {
         </div>
         <div className={styles.stay}>
             <p>
-                25-night stay
+                25 - kì nghỉ
             </p>
 
             <div>
@@ -141,14 +141,14 @@ export const SearchRequest = ({ filterSearch }) => {
             </div>
         </div>
         <div className={styles.children}>
-            <div>
+            {/* <div>
                 <input type="text" placeholder="No children" value={`${children} children`} onClick={handleChild} />
                 <svg className={styles.svg} height="16" width="16" viewBox="0 0 24 24" role="presentation" aria-hidden="true" focusable="false"><path d="M12 20.09a1.24 1.24 0 0 1-.88-.36L6 14.61a.75.75 0 1 1 1.06-1.06L12 18.49l4.94-4.94A.75.75 0 0 1 18 14.61l-5.12 5.12a1.24 1.24 0 0 1-.88.36zm6-9.46a.75.75 0 0 0 0-1.06l-5.12-5.11a1.24 1.24 0 0 0-1.754-.006l-.006.006L6 9.57a.75.75 0 0 0 0 1.06.74.74 0 0 0 1.06 0L12 5.7l4.94 4.93a.73.73 0 0 0 .53.22c.2 0 .39-.078.53-.22z"></path></svg>
             </div>
             <div>
                 <input type="text" placeholder="rooms" value={`${rooms} rooms`} onClick={handleRoom} />
                 <svg className={styles.svg} height="16" width="16" viewBox="0 0 24 24" role="presentation" aria-hidden="true" focusable="false"><path d="M12 20.09a1.24 1.24 0 0 1-.88-.36L6 14.61a.75.75 0 1 1 1.06-1.06L12 18.49l4.94-4.94A.75.75 0 0 1 18 14.61l-5.12 5.12a1.24 1.24 0 0 1-.88.36zm6-9.46a.75.75 0 0 0 0-1.06l-5.12-5.11a1.24 1.24 0 0 0-1.754-.006l-.006.006L6 9.57a.75.75 0 0 0 0 1.06.74.74 0 0 0 1.06 0L12 5.7l4.94 4.93a.73.73 0 0 0 .53.22c.2 0 .39-.078.53-.22z"></path></svg>
-            </div>
+            </div> */}
         </div>
         {/* <div className={styles.lower}>
             <div>
@@ -161,13 +161,11 @@ export const SearchRequest = ({ filterSearch }) => {
 
         </div> */}
         <div className={styles.button}>
-            <button onClick={handleSearch}>Search</button>
+            <button onClick={handleSearch}>Tìm kiếm</button>
         </div>
         <div className={styles.cal}>
             {
                 intiDate &&
-
-
                 <div className={styles.calenderItem}>
                     <Calendar
                         onChange={onInitChange}
@@ -196,7 +194,7 @@ export const SearchRequest = ({ filterSearch }) => {
                 </div>
             </div>
         }
-        {
+        {/* {
             child && <div className={styles.childSelect}>
                 <div>
                     <button onClick={() => handleChildren(-1)}>-</button>
@@ -212,7 +210,7 @@ export const SearchRequest = ({ filterSearch }) => {
                     <button onClick={() => handleRooms(1)}>+</button>
                 </div>
             </div>
-        }
+        } */}
 
     </div>
 

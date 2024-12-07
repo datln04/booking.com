@@ -128,141 +128,128 @@ const ContactItem = styled.div`
 `;
 
 const AttractionDetail = () => {
-    const { id } = useParams();
-    const attraction = attractions.find(attraction => attraction.id === parseInt(id));
+  const { id } = useParams();
+  const attraction = attractions.find(attraction => attraction.id === parseInt(id));
 
-    if (!attraction) {
-        return <div>Attraction not found</div>;
-    }
+  if (!attraction) {
+      return <div>Không tìm thấy địa điểm</div>;
+  }
 
-    const {
-        title,
-        location,
-        rating,
-        reviews,
-        price,
-        duration,
-        highlights,
-        image,
-        thumbnails,
-        description,
-        restrictions,
-        includes,
-        additionalInfo,
-        contact
-    } = attraction;
+  const {
+      title,
+      location,
+      rating,
+      reviews,
+      price,
+      duration,
+      highlights,
+      image,
+      thumbnails,
+      description,
+      restrictions,
+      includes,
+      additionalInfo,
+      contact
+  } = attraction;
 
-    const RightContentComponent = ({ location, contact }) => (
-        <RightContent>
-            {/* <MapWrapper>
-                <MapContainer center={[location.lat, location.lng]} zoom={13} style={{ height: "100%", width: "100%" }}>
-                    <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    />
-                    <Marker position={[location.lat, location.lng]}>
-                        <Popup>
-                            {contact.address}
-                        </Popup>
-                    </Marker>
-                </MapContainer>
-            </MapWrapper> */}
-            <ContactInfo>
-                <h3>Contact Information</h3>
-                <ContactItem>
-                    <FontAwesomeIcon icon={faPhone} /> {contact.phone}
-                </ContactItem>
-                <ContactItem>
-                    <FontAwesomeIcon icon={faEnvelope} /> {contact.email}
-                </ContactItem>
-                <ContactItem>
-                    <FontAwesomeIcon icon={faMapMarkerAlt} /> {contact.address}
-                </ContactItem>
-            </ContactInfo>
-        </RightContent>
-    );
+  const RightContentComponent = ({ location, contact }) => (
+      <RightContent>
+          <ContactInfo>
+              <h3>Thông tin liên hệ</h3>
+              <ContactItem>
+                  <FontAwesomeIcon icon={faPhone} /> {contact.phone}
+              </ContactItem>
+              <ContactItem>
+                  <FontAwesomeIcon icon={faEnvelope} /> {contact.email}
+              </ContactItem>
+              <ContactItem>
+                  <FontAwesomeIcon icon={faMapMarkerAlt} /> {contact.address}
+              </ContactItem>
+          </ContactInfo>
+      </RightContent>
+  );
 
-    const formatKey = (key) => {
-        return key
-            .replace(/([A-Z])/g, ' $1') // Add a space before each uppercase letter
-            .replace(/^./, (str) => str.toUpperCase()); // Capitalize the first letter
-    };
+  const formatKey = (key) => {
+      return key
+          .replace(/([A-Z])/g, ' $1') // Thêm khoảng trắng trước các chữ cái viết hoa
+          .replace(/^./, (str) => str.toUpperCase()); // Viết hoa chữ cái đầu
+  };
 
-    return (
-        <>
-            <div style={{ marginBottom: '20px' }}>
-                <Navbar />
-            </div>
-            <Container>
-                <Title>{title}</Title>
-                <ImageSection>
-                    <BigImage src={image} alt={title} />
-                    <Thumbnails>
-                        {thumbnails.map((thumb, index) => {
-                            if (index === 3 && thumbnails.length > 4) {
-                                return (
-                                    <ThumbnailWrapper key={index}>
-                                        <Thumbnail src={thumb} alt={title} style={{ width: '100%', marginBottom: '0' }} />
-                                        <ThumbnailText>+{thumbnails.length - 4}</ThumbnailText>
-                                    </ThumbnailWrapper>
-                                );
-                            } else if (index <= 3) {
-                                return <Thumbnail key={index} src={thumb} alt={title} />;
-                            }
-                            return null;
-                        })}
-                    </Thumbnails>
-                </ImageSection>
-                <ParentContent>
-                    <LeftContent>
-                        <Duration>
-                            <div className='d-flex justify-content-between'>
-                                <FontAwesomeIcon icon={faClock} /> <b>Duration: {duration}</b>
-                            </div>
-                        </Duration>
-                        <h2>User Ratings</h2>
-                        <Rating>
-                            <FontAwesomeIcon icon={faStar} /> {rating} ({reviews} reviews)
-                        </Rating>
-                        <Review />
-                        <Section>
-                            <SectionTitle>What's Included</SectionTitle>
-                            <ul>
-                                {includes.map((item, index) => (
-                                    <ListItem key={index}>
-                                        <FontAwesomeIcon icon={faCheck} style={{ color: 'green', marginRight: '10px' }} />
-                                        {item}
-                                    </ListItem>
-                                ))}
-                            </ul>
-                        </Section>
-                        <Section>
-                            <SectionTitle>
-                                <RestrictionIcon icon={faExclamationTriangle} /> Restrictions
-                            </SectionTitle>
-                            <ul>
-                                {Object.entries(restrictions).map(([key, value], index) => (
-                                    <ListItem key={index}>{`${formatKey(key)}: ${value}`}</ListItem>
-                                ))}
-                            </ul>
-                        </Section>
-                        <Section>
-                            <SectionTitle>
-                                <AdditionalInfoIcon icon={faInfoCircle} /> Additional Information
-                            </SectionTitle>
-                            <ul>
-                                {Object.entries(additionalInfo).map(([key, value], index) => (
-                                    <ListItem key={index}>{`${formatKey(key)}: ${value}`}</ListItem>
-                                ))}
-                            </ul>
-                        </Section>
-                    </LeftContent>
-                    <RightContentComponent location={location} contact={contact} />
-
-                </ParentContent>
-            </Container>
-        </>
-    );
+  return (
+      <>
+          <div style={{ marginBottom: '20px' }}>
+              <Navbar />
+          </div>
+          <Container>
+              <Title>{title}</Title>
+              <ImageSection>
+                  <BigImage src={image} alt={title} />
+                  <Thumbnails>
+                      {thumbnails.map((thumb, index) => {
+                          if (index === 3 && thumbnails.length > 4) {
+                              return (
+                                  <ThumbnailWrapper key={index}>
+                                      <Thumbnail src={thumb} alt={title} style={{ width: '100%', marginBottom: '0' }} />
+                                      <ThumbnailText>+{thumbnails.length - 4}</ThumbnailText>
+                                  </ThumbnailWrapper>
+                              );
+                          } else if (index <= 3) {
+                              return <Thumbnail key={index} src={thumb} alt={title} />;
+                          }
+                          return null;
+                      })}
+                  </Thumbnails>
+              </ImageSection>
+              <ParentContent>
+                  <LeftContent>
+                      <Duration>
+                          <div className='d-flex justify-content-between'>
+                              <FontAwesomeIcon icon={faClock} /> <b>Thời lượng: {duration}</b>
+                          </div>
+                      </Duration>
+                      <h2>Đánh giá của người dùng</h2>
+                      <Rating>
+                          <FontAwesomeIcon icon={faStar} /> {rating} ({reviews} đánh giá)
+                      </Rating>
+                      <Review />
+                      <Section>
+                          <SectionTitle>Những gì bao gồm</SectionTitle>
+                          <ul>
+                              {includes.map((item, index) => (
+                                  <ListItem key={index}>
+                                      <FontAwesomeIcon icon={faCheck} style={{ color: 'green', marginRight: '10px' }} />
+                                      {item}
+                                  </ListItem>
+                              ))}
+                          </ul>
+                      </Section>
+                      <Section>
+                          <SectionTitle>
+                              <RestrictionIcon icon={faExclamationTriangle} /> Hạn chế
+                          </SectionTitle>
+                          <ul>
+                              {Object.entries(restrictions).map(([key, value], index) => (
+                                  <ListItem key={index}>{`${formatKey(key)}: ${value}`}</ListItem>
+                              ))}
+                          </ul>
+                      </Section>
+                      <Section>
+                          <SectionTitle>
+                              <AdditionalInfoIcon icon={faInfoCircle} /> Thông tin bổ sung
+                          </SectionTitle>
+                          <ul>
+                              {Object.entries(additionalInfo).map(([key, value], index) => (
+                                  <ListItem key={index}>{`${formatKey(key)}: ${value}`}</ListItem>
+                              ))}
+                          </ul>
+                      </Section>
+                  </LeftContent>
+                  <RightContentComponent location={location} contact={contact} />
+              </ParentContent>
+          </Container>
+      </>
+  );
 };
+
 
 export default AttractionDetail;

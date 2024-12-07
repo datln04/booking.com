@@ -61,7 +61,7 @@ flex:0 0 auto;
 max-height: 300px;
 overflow: auto;
 overflow-y: hidden;
-top: 52%;
+top: 46%;
 left: 12%;
 border-radius: 10px;
 width: 359px;
@@ -91,7 +91,7 @@ box-shadow: 2px 2px 2px 2px #7c787849;
 } */
 `
 
-export function Searchbar({ setLoading, loading, suggestions, onChange }) {
+export function Searchbar({ setLoading, loading, suggestions, onChange, placeholder }) {
     const [q, setQ] = React.useState("");
     const [active, setActive] = React.useState(0);
     const scrollRef = React.useRef();
@@ -158,7 +158,7 @@ export function Searchbar({ setLoading, loading, suggestions, onChange }) {
     return <>
         <SearchBarWrapper onKeyUp={handleChangeActiveSuggestions}>
             {/* <IconImage src="https://image.flaticon.com/icons/png/512/49/49116.png" alt="icon" /> */}
-            <Input onChange={handleInputChange} value={q} placeholder="Where are you going?" />
+            <Input onChange={handleInputChange} value={q} placeholder={placeholder} />
             <RightSide>
                 {q && <div onClick={handleClear}>
                     <p>
@@ -171,12 +171,8 @@ export function Searchbar({ setLoading, loading, suggestions, onChange }) {
         </SearchBarWrapper>
         {!loading && (<SuggestionBox ref={scrollRef} active={active} limit={5} len={suggestions.length}>
             {suggestions.map((item, index) => (
-
                 <div key={index} onMouseOver={() => setActive(index + 1)}>
-
                     {item}
-
-
                 </div>
             ))}
         </SuggestionBox>

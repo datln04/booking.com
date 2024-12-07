@@ -339,3 +339,7 @@ width: 40%;
  cursor: pointer;
  font-size: 24px;
 }
+
+.left {
+    width: 30%;
+}

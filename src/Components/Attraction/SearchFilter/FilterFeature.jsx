@@ -63,25 +63,25 @@ export const FilterFeature = ({
 
   return (
     <div className={styles.filterFeatureContainer}>
-      <h2 className={styles.header}>Filter by:</h2>
+      <h2 className={styles.header}>Lọc theo:</h2>
 
       <div className={styles.filterSection}>
-        <h3>Location</h3>
+        <h3>Địa điểm</h3>
         {renderFilterOptions(locationCounts, filterLocation)}
       </div>
 
       <div className={styles.filterSection}>
-        <h3>Rating</h3>
+        <h3>Đánh giá</h3>
         {renderFilterOptions(ratingCounts, filterRating)}
       </div>
 
       <div className={styles.filterSection}>
-        <h3>Review Count</h3>
+        <h3>Số lượng đánh giá</h3>
         {renderFilterOptions(reviewCountCounts, filterReviewCount)}
       </div>
 
       <div className={styles.filterSection}>
-        <h3>Adult Price</h3>
+        <h3>Giá người lớn</h3>
         <input
           type="range"
           name="min"
@@ -91,11 +91,11 @@ export const FilterFeature = ({
           value={adultPriceRange[0]}
           onChange={handleRangeFilter(filterAdultPrice, setAdultPriceRange)}
         />
-        <p>Selected range: ${adultPriceRange[0]} - ${adultPriceRange[1]}</p>
+        <p>Khoảng giá được chọn: ${adultPriceRange[0]} - ${adultPriceRange[1]}</p>
       </div>
 
       <div className={styles.filterSection}>
-        <h3>Child Price</h3>
+        <h3>Giá trẻ em</h3>
         <input
           type="range"
           name="min"
@@ -105,18 +105,19 @@ export const FilterFeature = ({
           value={childPriceRange[0]}
           onChange={handleRangeFilter(filterChildPrice, setChildPriceRange)}
         />
-        <p>Selected range: ${childPriceRange[0]} - ${childPriceRange[1]}</p>
+        <p>Khoảng giá được chọn: ${childPriceRange[0]} - ${childPriceRange[1]}</p>
       </div>
 
       <div className={styles.filterSection}>
-        <h3>Duration</h3>
+        <h3>Thời gian</h3>
         {renderFilterOptions(durationCounts, filterDuration)}
       </div>
 
       <div className={styles.filterSection}>
-        <h3>Highlights</h3>
+        <h3>Điểm nổi bật</h3>
         {renderFilterOptions(highlightsCounts, filterHighlights)}
       </div>
     </div>
+
   );
 };

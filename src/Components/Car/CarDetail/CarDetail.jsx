@@ -33,6 +33,7 @@ const CarData = styled.div`
 const CarPriceBreakdownContainer = styled.div`
   flex: 0 0 30%;
 `;
+
 const BookButton = styled.button`
     background-color: #ff5a5f;
     color: white;
@@ -47,6 +48,7 @@ const BookButton = styled.button`
     }
     float: right;
 `;
+
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -74,13 +76,15 @@ const CarDetail = () => {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
     const car = carData.find(car => car.id === id);
+
     return (
         <Container>
             <div style={{ marginBottom: '20px' }}>
                 <Navbar />
             </div>
-            <CarBreadcrumb startTime={'10:00 AM'} endTime={'1:00 PM'} location={'Hồ Chí Minh city'} />
+            <CarBreadcrumb startTime={'10:00 AM'} endTime={'1:00 PM'} location={'Thành phố Hồ Chí Minh'} />
             <CarDetailContainer>
                 <CarData>
                     <CarDataComponent
@@ -102,73 +106,73 @@ const CarDetail = () => {
                         isBooking={true}
                     />
                     <List>
-                        <h2>Included in the price</h2>
+                        <h2>Đã bao gồm trong giá</h2>
                         <ListItem>
                             <ListItemIcon>
                                 <CheckIcon style={{ color: 'green' }} />
                             </ListItemIcon>
-                            <ListItemText primary="Free cancellation up to 48 hours before pick-up" />
+                            <ListItemText primary="Hủy miễn phí trước 48 giờ trước khi nhận xe" />
                         </ListItem>
                         <ListItem>
                             <ListItemIcon>
                                 <CheckIcon style={{ color: 'green' }} />
                             </ListItemIcon>
-                            <ListItemText primary="Collision Damage Waiver with VND 18,522,443 deductible" />
+                            <ListItemText primary="Miễn trừ thiệt hại va chạm với mức khấu trừ VND 18,522,443" />
                         </ListItem>
                         <ListItem>
                             <ListItemIcon>
                                 <CheckIcon style={{ color: 'green' }} />
                             </ListItemIcon>
-                            <ListItemText primary="Theft Protection with VND 18,522,443 excess" />
+                            <ListItemText primary="Bảo vệ chống trộm với mức khấu trừ VND 18,522,443" />
                         </ListItem>
                         <ListItem>
                             <ListItemIcon>
                                 <CheckIcon style={{ color: 'green' }} />
                             </ListItemIcon>
-                            <ListItemText primary="270 kilometres per rental" />
+                            <ListItemText primary="270 km mỗi lần thuê" />
                         </ListItem>
                     </List>
-                    <h2>Your pick-up checklist</h2>
+                    <h2>Danh sách kiểm tra khi nhận xe</h2>
                     <Tabs value={value} onChange={handleChange} aria-label="pick-up checklist tabs">
-                        <Tab icon={<FontAwesomeIcon icon={faClock} />} label="Arrival on time" />
-                        <Tab icon={<FontAwesomeIcon icon={faUser} />} label="What to bring" />
-                        <Tab icon={<FontAwesomeIcon icon={faWallet} />} label="Refundable deposit" />
+                        <Tab icon={<FontAwesomeIcon icon={faClock} />} label="Đến đúng giờ" />
+                        <Tab icon={<FontAwesomeIcon icon={faUser} />} label="Những gì cần mang theo" />
+                        <Tab icon={<FontAwesomeIcon icon={faWallet} />} label="Tiền đặt cọc có thể hoàn lại" />
                     </Tabs>
                     <TabPanel value={value} index={0}>
-                        Rental companies only allow you to get your keys at your allocated pick-up time, they'll usually hold your car for a limited time after you're due to pick it up - then it's likely to be passed to another customer.
+                        Các công ty cho thuê chỉ cho phép nhận chìa khóa vào thời gian được chỉ định. Xe của bạn sẽ thường được giữ trong một thời gian giới hạn sau thời gian nhận xe - sau đó xe có thể được giao cho khách hàng khác.
                         <br />
-                        Your pick-up time is 10:00 AM
+                        Thời gian nhận xe của bạn là 10:00 sáng.
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        When you pick the car up, you'll need:
+                        Khi nhận xe, bạn cần:
                         <List>
                             <ListItem>
                                 <ListItemIcon>
                                     <FontAwesomeIcon icon={faCheck} style={{ color: 'green' }} />
                                 </ListItemIcon>
-                                <ListItemText primary="A passport or national ID card" />
+                                <ListItemText primary="Hộ chiếu hoặc căn cước công dân" />
                             </ListItem>
                             <ListItem>
                                 <ListItemIcon>
                                     <FontAwesomeIcon icon={faCheck} style={{ color: 'green' }} />
                                 </ListItemIcon>
-                                <ListItemText primary="All drivers to provide their driver's licence(s)" />
+                                <ListItemText primary="Giấy phép lái xe của tất cả tài xế" />
                             </ListItem>
                             <ListItem>
                                 <ListItemIcon>
                                     <FontAwesomeIcon icon={faCheck} style={{ color: 'green' }} />
                                 </ListItemIcon>
-                                <ListItemText primary="A credit card in the main driver's name, to hold the security deposit" />
+                                <ListItemText primary="Thẻ tín dụng đứng tên tài xế chính để giữ tiền đặt cọc" />
                             </ListItem>
                         </List>
                     </TabPanel>
                     <TabPanel value={value} index={2}>
-                        At pick-up, the main driver will need DKK 10,000 available on their credit card for a refundable security deposit. Cash and debit cards aren't accepted.
+                        Khi nhận xe, tài xế chính cần có 10.000 DKK trong thẻ tín dụng của họ để làm tiền đặt cọc hoàn lại. Tiền mặt và thẻ ghi nợ không được chấp nhận.
                         <br />
-                        Accepted cards: Mastercard, Visa, American Express
+                        Thẻ được chấp nhận: Mastercard, Visa, American Express
                     </TabPanel>
                     <BookButton variant="contained" size="large">
-                        Book Here
+                        Đặt xe tại đây
                     </BookButton>
                 </CarData>
                 <CarPriceBreakdownContainer>

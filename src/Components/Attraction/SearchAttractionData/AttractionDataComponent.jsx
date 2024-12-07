@@ -16,7 +16,7 @@ export const AttractionDataComponent = ({
   description,
   isBooking
 }) => {
-  const lab = "See More >";
+  const lab = "Chi tiết >";
   return (
     <div className={styles.maindiv}>
       <div className={styles.imgdiv}>
@@ -31,16 +31,16 @@ export const AttractionDataComponent = ({
         </div>
 
         <h5 style={{ color: "green", padding: "0", marginTop: "6px", marginBottom: "0" }}>
-          Highlights: {highlights.join(", ")}
+          Điểm nổi bật: {highlights.join(", ")}
         </h5>
         <p>{description}</p>
         <div style={{ marginTop: "10px" }}>
-          <p style={{ color: "orange", fontSize: "1.5em" }}><FontAwesomeIcon icon={faStar} /> {`Rating: ${rating} (${reviews} reviews)`}</p>
+          <p style={{ color: "orange", fontSize: "1.5em" }}><FontAwesomeIcon icon={faStar} /> {`Đánh giá: ${rating} (${reviews} nhận xét)`}</p>
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}>
         <div style={{ marginTop: "10px", textAlign: "right" }}>
-          <p><FontAwesomeIcon icon={faDollarSign} /> Price:<p>{`Adult $`}<b>{price.adult}</b></p> Child {`$`}<b>{price.child}</b></p>
+          <p><FontAwesomeIcon icon={faDollarSign} /> Giá:<p>{`Người lớn $`}<b>{price.adult}</b></p> Trẻ em {`$`}<b>{price.child}</b></p>
           {!isBooking && <Link to={`/attraction/${id}`}>
             <button style={{ backgroundColor: "#0071C2", color: "white", border: "none", borderRadius: "3px", padding: "15px", marginTop: "10px", cursor: "pointer" }}>
               {lab}

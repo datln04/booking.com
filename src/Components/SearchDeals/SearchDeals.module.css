@@ -88,15 +88,15 @@ margin-right:7%;
 
 .searchDealsContainer .searchDealsBars > .calender .calenderItem2{
    position: absolute;
-   top: 50%;
-   left: 35%;
+   top: 43%;
+   left: 37%;
     z-index: 700;
 
 }
 .searchDealsContainer .searchDealsBars > .calender .calenderItem{
     position: absolute;
-   top: 50%;
-   left: 35%;
+   top: 43%;
+   left: 37%;
     z-index: 700;
 
  
@@ -145,8 +145,8 @@ color:rgb(85, 84, 84) ;
     padding: 1%;
     background-color: white;
     z-index: 4;
-    top: 52%;
-   left: 57.5%;
+    top: 46%;
+    left: 57%;
     z-index: 700;
     border-radius: 5px;
     box-shadow: 2px 2px 2px rgba(116, 115, 115, 0.445);

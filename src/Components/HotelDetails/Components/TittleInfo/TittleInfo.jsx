@@ -1,11 +1,10 @@
-import styled from 'styled-components'
-import Star from './Star'
-import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import ShareIcon from '@material-ui/icons/Share';
 import RoomIcon from '@material-ui/icons/Room';
-import { redirect } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import ShareIcon from '@material-ui/icons/Share';
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import Star from './Star';
 const Cont = styled.div`
 display:grid;
 grid-template-columns: 70% 30%;
@@ -204,6 +203,7 @@ p{
 }
 
 `
+
 export const TitleInfo = (props) => {
     const [user, setUser] = useState(false);
 
@@ -211,123 +211,83 @@ export const TitleInfo = (props) => {
         let data = JSON.parse(localStorage.getItem("login"));
 
         if (data) {
-            setUser(true)
+            setUser(true);
+        } else {
+            setUser(false);
         }
-        else {
-            setUser(false)
-        }
-    }, [])
+    }, []);
 
     const handleClick = () => {
         if (user) {
-
-            alert("Congratulations! You Rooms has been booked successfully ")
-
-            return <redirect to="/" />
+            alert("Chúc mừng! Phòng của bạn đã được đặt thành công.");
+        } else {
+            alert("Vui lòng đăng nhập trước!");
         }
-        else {
-            alert("Please login first!")
-        }
-    }
+    };
+
     return (
-
         <Container>
             <Cont>
                 <Info>
                     <NameDiv>
-
-                        <P> {props.type}</P>
+                        <P>{props.type}</P>
                         <Name>{props.name}</Name>
-
-
                     </NameDiv>
                     <Star num="5" />
                     <Thumb>
-
                         <ThumbUpAltIcon style={{ color: "#ffff", fontSize: 19 }} />
                     </Thumb>
 
                     <Map>
-                        <RoomIcon style={{ color: "#3c79cf", marign: "0px" }} />
+                        <RoomIcon style={{ color: "#3c79cf", margin: "0px" }} />
                         <MapInfo>{props.address}</MapInfo>
-
-
                     </Map>
 
-                    <ShowMap>
-                        Show map
-
-                    </ShowMap>
-
-
-
-
+                    <ShowMap>Hiển thị bản đồ</ShowMap>
                 </Info>
 
                 <RightDiv>
-
                     <div>
                         <FavoriteBorderIcon style={{ color: "#3c79cf" }} />
                         <ShareIcon style={{ color: "#3c79cf", marginLeft: "10px" }} />
                         <Reserve>
-
-                            <p onClick={handleClick}>
-                                {/* <Link to="/" style={{ color: "white", textDecoration: "none" }}> */}
-                                Reserve
-                                {/* </Link> */}
-                            </p>
-
+                            <p onClick={handleClick}>Đặt ngay</p>
                         </Reserve>
-
-
                     </div>
 
                     <Tag>
-                        <img src="https://cf.bstatic.com/static/img/bpg/bpg_logo_retina/b4785e81dfbdb3907f75887373d5920d3dc3b245.png" alt="tag" />
-                        <p>We Price Match</p>
-
+                        <img
+                            src="https://cf.bstatic.com/static/img/bpg/bpg_logo_retina/b4785e81dfbdb3907f75887373d5920d3dc3b245.png"
+                            alt="tag"
+                        />
+                        <p>Chúng tôi đảm bảo giá tốt nhất</p>
                     </Tag>
-
-
                 </RightDiv>
-
-
-
-
             </Cont>
-            <ImageDiv>
 
+            <ImageDiv>
                 <ShortImage style={{ gridArea: "short1" }}>
-                    <img src={`${props.url_1}`} alt="check" />
+                    <img src={`${props.url_1}`} alt="Hình ảnh" />
                 </ShortImage>
                 <ShortImage style={{ gridArea: "short2" }}>
-                    <img src={`${props.url_2}`} alt="check" />
-
+                    <img src={`${props.url_2}`} alt="Hình ảnh" />
                 </ShortImage>
                 <LargeImage style={{ gridArea: "long" }}>
-                    <img src={`${props.url_3}`} alt="check" />
-
+                    <img src={`${props.url_3}`} alt="Hình ảnh" />
                 </LargeImage>
-
-
             </ImageDiv>
 
             <FlexDiv>
-
                 <ImageBox style={{ backgroundImage: `url(${props.url_5})` }} />
                 <ImageBox style={{ backgroundImage: `url(${props.url_6})` }} />
                 <ImageBox style={{ backgroundImage: `url(${props.url_7})` }} />
                 <ImageBox style={{ backgroundImage: `url(${props.url_8})` }} />
                 <ImageBox style={{ background: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),url(${props.img})` }}>
-                    <Text> <p>+32photos</p>
+                    <Text>
+                        <p>+32 hình ảnh</p>
                     </Text>
                 </ImageBox>
-
-
-
-
             </FlexDiv>
-
         </Container>
-    )
-}
+    );
+};
