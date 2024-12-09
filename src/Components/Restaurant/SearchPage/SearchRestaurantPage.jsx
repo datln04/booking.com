@@ -1,21 +1,97 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FooterBlue from "../../Footer/FooterBlue";
 import { Navbar } from "../../Navbar/Navbar";
 import { HotelData } from "../../../Utils/HotelData";
 import styles from "../../SearchPage/SearchRequest.module.css"
-import { restaurants } from "../../../Utils/mock";
 import { RestaurantDataComponent } from "../SearchRestaurantData/RestaurantDataComponent";
 import { SearchRestaurantSideNav } from "../SearchNav/SearchRestaurantSideNav";
 import { FilterFeature } from "../SearchFilter/FilterFeature";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
+import { fetchFilteredData, fetchFilteredDataWithoutFilter } from "../../../Utils/Service";
 
 
 export const SearchRestaurantPage = () => {
-    const [showData, setShowData] = useState(restaurants)
+    const [showData, setShowData] = useState(null)
     const [price, setPrice] = useState(false)
     const [star, setStar] = useState(false)
     // const [policy, setPolicy] = useState(false)
+    const [filterData, setFilterData] = useState(null);
+
+    const location = useLocation(); // Get the location object
+    const queryParams = new URLSearchParams(location.search);
+
+    // Extract parameters
+    const provinceId = queryParams.get('provinceId');
+    const checkInDate = queryParams.get('checkInDate');
+    const tableSize = queryParams.get('tableSize');
+
+    useEffect(() => {
+        getData()
+    }, [location]);
 
 
+    const getData = async () => {
+        const filter = {
+            tableSize: parseInt(tableSize), // Ensure it's a number
+            checkInDate: checkInDate,
+            filters: [
+                {
+                    field: "ProvinceId",
+                    operator: "Equal",
+                    value: parseInt(provinceId), // Static or dynamic value, adjust as needed
+                },
+            ],
+            includes: ["RestaurantDietaryOptions","RestaurantDietaryOptions.DietaryOption", "CuisineType"],
+            logic: "string", // Replace with appropriate logic value
+            pageSize: 0,
+            pageNumber: 0,
+            all: true,
+        };
+        let data = await fetchFilteredDataWithoutFilter('/Restaurants/SearchRestaurants', filter).then((response) => {
+            if (response && response?.length > 0) {
+                return response?.map((e) => {
+                    const requestObject = {
+                        filters: [
+                            {
+                                field: "ServiceId",
+                                operator: "Equal",
+                                value: e?.id,
+                            },
+                            {
+                                field: "ServiceType",
+                                operator: "Contains",
+                                value: "Restaurant",
+                            },
+                            {
+                                field: "ImageType",
+                                operator: "Contains",
+                                value: "Image",
+                            },
+                        ],
+                        logic: "And",
+                        pageSize: 0,
+                        pageNumber: 0,
+                        all: true,
+                    };
+
+                    return fetchFilteredData('/Images', requestObject).then(resp => {
+                        if (resp) {
+                            const image = resp.find((img) => img.serviceId === e.id);
+                            return { ...e, url: image?.imageUrl };
+                        }
+                    })
+                })
+            }
+        });
+        if (data) {
+            data = await Promise.all(data);
+            setShowData(data);
+            setFilterData(data);
+        } else {
+            setShowData([]);
+            setFilterData([]);
+        }
+    }
     const filterPrice = (e) => {
 
         if (e.target.name === "price") {
@@ -132,30 +208,31 @@ export const SearchRestaurantPage = () => {
                 <FilterFeature filterPrice={filterPrice} filterStar={filterStar} filterPolicy={filterPolicy} />
             </div>
 
-            <div className={styles.hotelListContainer}>
+            {
+                showData && <div className={styles.hotelListContainer}>
+                    {showData.map((restaurant) => (
+                        <RestaurantDataComponent
+                            key={restaurant.id}
+                            id={restaurant.id}
+                            url={restaurant.url}
+                            name={restaurant.name}
+                            city={restaurant.city}
+                            cuisineType={restaurant.cuisineType}
+                            address={restaurant.address}
+                            phoneNumber={restaurant.phoneNumber}
+                            email={restaurant.email}
+                            rating={restaurant.starRating}
+                            operatingHours={restaurant.openingHours}
+                            photos={restaurant?.photos}
+                            priceRange={restaurant?.priceRange}
+                            reviews={restaurant?.reviews}
+                            dietaryOptions={restaurant.restaurantDietaryOptions}
+                            discountMessage={restaurant?.discountMessage}
+                        />
+                    ))}
 
-                {showData.map((restaurant) => (
-                    <RestaurantDataComponent
-                        key={restaurant.id}
-                        id={restaurant.id}
-                        url={restaurant.url}
-                        name={restaurant.name}
-                        city={restaurant.city}
-                        cuisineType={restaurant.cuisineType}
-                        address={restaurant.address}
-                        phoneNumber={restaurant.phoneNumber}
-                        email={restaurant.email}
-                        rating={restaurant.rating}
-                        operatingHours={restaurant.operatingHours}
-                        photos={restaurant.photos}
-                        priceRange={restaurant.priceRange}
-                        reviews={restaurant.reviews}
-                        dietaryOptions={restaurant.dietaryOptions}
-                        discountMessage={restaurant.discountMessage}
-                    />
-                ))}
-
-            </div>
+                </div>
+            }
         </div>
         <FooterBlue />
     </>

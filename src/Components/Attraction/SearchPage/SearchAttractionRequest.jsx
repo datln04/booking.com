@@ -112,10 +112,12 @@ function SearchAttractionRequest() {
   const [dropoffTime, setDropoffTime] = useState('');
   const [showPickupCalendar, setShowPickupCalendar] = useState(false);
   const [showDropoffCalendar, setShowDropoffCalendar] = useState(false);
+  // const [suggestions, setSuggestions] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   const handleChange = (event) => {
     const { id, value } = event.target;
-    console.log('id: ', id, 'value: ', value);
+
 
     switch (id) {
       case 'location':
@@ -249,7 +251,9 @@ function SearchAttractionRequest() {
         .filter((item) =>
           item.name.toLowerCase().indexOf(query.toLocaleLowerCase()) !== -1 ? true : false
         )
-        .map((item) => item.name);
+        .map((item) => {
+          return { id: item?.id, name: item?.name }
+        });
       setSuggestions(out);
       console.log(out);
       // setLoading(false);
@@ -262,6 +266,19 @@ function SearchAttractionRequest() {
     }
     getData()
   }, [])
+
+  const handleSearch = () => {
+
+    const formatDate = (date) => {
+      return date.toISOString();
+    };
+
+    if (selectedLocation && initvalue && endvalue && adults && children) {
+      window.location.href = `/searchAttraction?provinceId=${selectedLocation?.id}&checkInDate=${formatDate(pickupDate)}&adults=${adults}&children=${children}`;
+    } else {
+      alert("Please fill all fields");
+    }
+  }
 
   return (
     <div className={styles.main}>
@@ -293,6 +310,7 @@ function SearchAttractionRequest() {
                 setSuggestions={setSuggestions}
                 onChange={(value) => setQuery(value)}
                 placeholder={"Chọn địa điểm du lịch?"}
+                setSelectedLocation={setSelectedLocation}
               />
             </div>
           </div>
@@ -373,9 +391,9 @@ function SearchAttractionRequest() {
               </div>}
           </div>
           <div className={styles.button} style={{ width: '170px', borderRight: '4px solid rgb(254, 187, 2)', borderTop: '4px solid rgb(254, 187, 2)', borderBottom: '4px solid rgb(254, 187, 2)' }}>
-            <a href="/searchAttraction">
+            <div onClick={handleSearch}>
               <button>Tìm kiếm</button>
-            </a>
+            </div>
           </div>
         </div>
       </div>

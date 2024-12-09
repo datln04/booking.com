@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faStar, faCheck, faInfoCircle, faExclamationTriangle, faPhone, faEnvelope, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faStar, faCheck, faInfoCircle, faExclamationTriangle, faPhone, faEnvelope, faMapMarkerAlt, faCancel, faInfo } from '@fortawesome/free-solid-svg-icons';
 import { attractions } from '../../../Utils/mock';
 import { Navbar } from '../../Navbar/Navbar';
 import Review from '../../Review/Review';
+import { fetchData, fetchFilteredData } from '../../../Utils/Service';
 // import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 
 const Container = styled.div`
@@ -127,127 +128,242 @@ const ContactItem = styled.div`
   margin-bottom: 10px;
 `;
 
+const Button = styled.button`
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-top: 20px;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
 const AttractionDetail = () => {
   const { id } = useParams();
   const attraction = attractions.find(attraction => attraction.id === parseInt(id));
 
-  if (!attraction) {
-      return <div>Không tìm thấy địa điểm</div>;
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    getData()
+  }, []);
+
+  const getData = async () => {
+    const filter = {
+      ilters: [
+        {
+          field: "Id",
+          operator: "Equal",
+          value: parseInt(id),
+        }
+      ],
+      includes: [
+        "LeisureActivitiesAdditionalInfos",
+        "LeisureActivitiesRestrictions",
+        "LeisureActivitiesAdditionalInfos.Info",
+        "LeisureActivitiesRestrictions.Restriction"
+      ],
+      logic: "string",
+      pageSize: 0,
+      pageNumber: 0,
+      all: true
+    }
+    const response = await fetchFilteredData(`/LeisureActivities/`, filter)
+    if (response) {
+      let tmp = { ...response[0] };
+      const requestObject = {
+        filters: [
+          {
+            field: "ServiceId",
+            operator: "Equal",
+            value: parseInt(id),
+          },
+          {
+            field: "ServiceType",
+            operator: "Contains",
+            value: "ExperienceService",
+          },
+          {
+            field: "ImageType",
+            operator: "Contains",
+            value: "Thumbnail",
+          },
+        ],
+        logic: "And",
+        pageSize: 0,
+        pageNumber: 0,
+        all: true,
+      };
+
+      const requestObjectImage = {
+        filters: [
+          {
+            field: "ServiceId",
+            operator: "Equal",
+            value: parseInt(id),
+          },
+          {
+            field: "ServiceType",
+            operator: "Contains",
+            value: "ExperienceService",
+          },
+          {
+            field: "ImageType",
+            operator: "Contains",
+            value: "Image",
+          },
+        ],
+        logic: "And",
+        pageSize: 0,
+        pageNumber: 0,
+        all: true,
+      };
+
+      const [thumbnailsResponse, imagesResponse] = await Promise.all([
+        fetchFilteredData('/Images', requestObject),
+        fetchFilteredData('/Images', requestObjectImage)
+      ]);
+
+      if (thumbnailsResponse && thumbnailsResponse.length > 0) {
+        tmp = { ...tmp, thumbnails: thumbnailsResponse };
+      }
+
+      if (imagesResponse && imagesResponse.length > 0) {
+        tmp = { ...tmp, image: imagesResponse[imagesResponse?.length - 1] };
+      }
+
+      setData(tmp);
+    }
+  }
+
+  if (!data) {
+    return <div>...loading</div>;
   }
 
   const {
-      title,
-      location,
-      rating,
-      reviews,
-      price,
-      duration,
-      highlights,
-      image,
-      thumbnails,
-      description,
-      restrictions,
-      includes,
-      additionalInfo,
-      contact
+    title,
+    location,
+    rating,
+    reviews,
+    price,
+    duration,
+    highlights,
+    image,
+    thumbnails,
+    description,
+    restrictions,
+    includes,
+    additionalInfo,
+    contact
   } = attraction;
 
   const RightContentComponent = ({ location, contact }) => (
-      <RightContent>
-          <ContactInfo>
-              <h3>Thông tin liên hệ</h3>
-              <ContactItem>
-                  <FontAwesomeIcon icon={faPhone} /> {contact.phone}
-              </ContactItem>
-              <ContactItem>
-                  <FontAwesomeIcon icon={faEnvelope} /> {contact.email}
-              </ContactItem>
-              <ContactItem>
-                  <FontAwesomeIcon icon={faMapMarkerAlt} /> {contact.address}
-              </ContactItem>
-          </ContactInfo>
-      </RightContent>
+    <RightContent>
+      <ContactInfo>
+        <h3>Thông tin liên hệ</h3>
+        <ContactItem>
+          <FontAwesomeIcon icon={faPhone} /> {contact.phone}
+        </ContactItem>
+        <ContactItem>
+          <FontAwesomeIcon icon={faEnvelope} /> {contact.email}
+        </ContactItem>
+        <ContactItem>
+          <FontAwesomeIcon icon={faMapMarkerAlt} /> {contact.address}
+        </ContactItem>
+      </ContactInfo>
+      <Button onClick={() => alert('Booking functionality coming soon!')}>Book Here</Button>
+    </RightContent>
   );
 
   const formatKey = (key) => {
-      return key
-          .replace(/([A-Z])/g, ' $1') // Thêm khoảng trắng trước các chữ cái viết hoa
-          .replace(/^./, (str) => str.toUpperCase()); // Viết hoa chữ cái đầu
+    return key
+      .replace(/([A-Z])/g, ' $1') // Thêm khoảng trắng trước các chữ cái viết hoa
+      .replace(/^./, (str) => str.toUpperCase()); // Viết hoa chữ cái đầu
   };
 
   return (
-      <>
-          <div style={{ marginBottom: '20px' }}>
-              <Navbar />
-          </div>
-          <Container>
-              <Title>{title}</Title>
-              <ImageSection>
-                  <BigImage src={image} alt={title} />
-                  <Thumbnails>
-                      {thumbnails.map((thumb, index) => {
-                          if (index === 3 && thumbnails.length > 4) {
-                              return (
-                                  <ThumbnailWrapper key={index}>
-                                      <Thumbnail src={thumb} alt={title} style={{ width: '100%', marginBottom: '0' }} />
-                                      <ThumbnailText>+{thumbnails.length - 4}</ThumbnailText>
-                                  </ThumbnailWrapper>
-                              );
-                          } else if (index <= 3) {
-                              return <Thumbnail key={index} src={thumb} alt={title} />;
-                          }
-                          return null;
-                      })}
-                  </Thumbnails>
-              </ImageSection>
-              <ParentContent>
-                  <LeftContent>
-                      <Duration>
-                          <div className='d-flex justify-content-between'>
-                              <FontAwesomeIcon icon={faClock} /> <b>Thời lượng: {duration}</b>
-                          </div>
-                      </Duration>
-                      <h2>Đánh giá của người dùng</h2>
-                      <Rating>
-                          <FontAwesomeIcon icon={faStar} /> {rating} ({reviews} đánh giá)
-                      </Rating>
-                      <Review />
-                      <Section>
-                          <SectionTitle>Những gì bao gồm</SectionTitle>
-                          <ul>
-                              {includes.map((item, index) => (
-                                  <ListItem key={index}>
-                                      <FontAwesomeIcon icon={faCheck} style={{ color: 'green', marginRight: '10px' }} />
-                                      {item}
-                                  </ListItem>
-                              ))}
-                          </ul>
-                      </Section>
-                      <Section>
-                          <SectionTitle>
-                              <RestrictionIcon icon={faExclamationTriangle} /> Hạn chế
-                          </SectionTitle>
-                          <ul>
-                              {Object.entries(restrictions).map(([key, value], index) => (
-                                  <ListItem key={index}>{`${formatKey(key)}: ${value}`}</ListItem>
-                              ))}
-                          </ul>
-                      </Section>
-                      <Section>
-                          <SectionTitle>
-                              <AdditionalInfoIcon icon={faInfoCircle} /> Thông tin bổ sung
-                          </SectionTitle>
-                          <ul>
-                              {Object.entries(additionalInfo).map(([key, value], index) => (
-                                  <ListItem key={index}>{`${formatKey(key)}: ${value}`}</ListItem>
-                              ))}
-                          </ul>
-                      </Section>
-                  </LeftContent>
-                  <RightContentComponent location={location} contact={contact} />
-              </ParentContent>
-          </Container>
-      </>
+    <>
+      <div style={{ marginBottom: '20px' }}>
+        <Navbar />
+      </div>
+      {data && <Container>
+        <Title>{data?.activityName}</Title>
+        <ImageSection>
+          <BigImage src={data?.image?.imageUrl} alt={title} />
+          <Thumbnails>
+            {data?.thumbnails.map((thumb, index) => {
+              if (index === 3 && thumbnails.length > 4) {
+                return (
+                  <ThumbnailWrapper key={index}>
+                    <Thumbnail src={thumb?.imageUrl} alt={thumb?.imageType} style={{ width: '100%', marginBottom: '0' }} />
+                    <ThumbnailText>+{thumbnails.length - 4}</ThumbnailText>
+                  </ThumbnailWrapper>
+                );
+              } else if (index <= 3) {
+                return <Thumbnail key={index} src={thumb?.imageUrl} alt={title} />;
+              }
+              return null;
+            })}
+          </Thumbnails>
+        </ImageSection>
+        <ParentContent>
+          <LeftContent>
+            <Duration>
+              <div className='d-flex justify-content-between'>
+                <FontAwesomeIcon icon={faClock} /> <b>Thời lượng: {data?.duration}</b>
+              </div>
+            </Duration>
+            <h2>Đánh giá của người dùng</h2>
+            <Rating>
+              <FontAwesomeIcon icon={faStar} /> {data?.rating} ({data?.reviews} đánh giá)
+            </Rating>
+            <Review />
+            <Section>
+              <SectionTitle>Những gì bao gồm</SectionTitle>
+              <ul>
+                {data?.includes.split(',').map((item, index) => (
+                  <ListItem key={index}>
+                    <FontAwesomeIcon icon={faCheck} style={{ color: 'green', marginRight: '10px' }} />
+                    {item}
+                  </ListItem>
+                ))}
+              </ul>
+            </Section>
+            <Section>
+              <SectionTitle>
+                <RestrictionIcon icon={faExclamationTriangle} /> Hạn chế
+              </SectionTitle>
+              <ul>
+                {data?.leisureActivitiesRestrictions?.map((r, index) => (
+                  <>
+                    <FontAwesomeIcon icon={faCancel} style={{ color: 'red', marginRight: '10px' }} />
+                    {`${r?.restriction?.name}`}
+                  </>
+                ))}
+              </ul>
+            </Section>
+            <Section>
+              <SectionTitle>
+                <AdditionalInfoIcon icon={faInfoCircle} /> Thông tin bổ sung
+              </SectionTitle>
+              <ul>
+                {data?.leisureActivitiesAdditionalInfos?.map((a, index) => (
+                  <>
+                    <FontAwesomeIcon icon={faInfo} style={{ color: 'lightBlue', marginRight: '10px' }} />
+                    {`${a?.info?.name}`}
+                  </>
+                ))}
+              </ul>
+            </Section>
+          </LeftContent>
+          <RightContentComponent location={location} contact={contact} />
+        </ParentContent>
+      </Container>}
+    </>
   );
 };
 

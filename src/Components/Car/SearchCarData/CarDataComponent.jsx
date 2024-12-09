@@ -18,13 +18,14 @@ export const CarDataComponent = ({
   location,
   licensePlate,
   features,
-  isBooking
+  isBooking, 
+  url
 }) => {
   const lab = "Chi tiết >";
   return (
     <div className={styles.maindiv}>
       <div className={styles.imgdiv}>
-        <img src={`/images/cars/${id}.jpg`} alt={`${make} ${model}`} />
+        <img src={url} alt={`${make} ${model}`} />
       </div>
       <div className={styles.datadiv}>
         <h3 className={styles.h3}>{`${make} ${model} (${year})`}</h3>
@@ -41,7 +42,11 @@ export const CarDataComponent = ({
         </div>
 
         <h5 style={{ color: "green", padding: "0", marginTop: "6px", marginBottom: "0" }}>
-          Tính năng: {features.join(", ")}
+          Tính năng: {
+            features.map((feature, index) => (
+              <span key={index} style={{ color: "black" }}>{feature.feature.featureName}, </span>
+            ))
+          }
         </h5>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>

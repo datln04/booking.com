@@ -1,6 +1,8 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import styles from "./SearchRestaurantSideNav.module.css"
 import Calendar from "react-calendar"
+import { fetchData } from "../../../Utils/Service"
+import { Searchbar } from "../../SearchDeals/Suggestion/Searchbar"
 
 
 export const SearchRestaurantSideNav = ({ filterSearch }) => {
@@ -91,14 +93,59 @@ export const SearchRestaurantSideNav = ({ filterSearch }) => {
         setRoom(!room)
     }
 
-    const handleSearch = () => {
-        filterSearch(destination)
-        setDestination("")
-        setAdults(1)
-        setChildren(0)
-        setRooms(1)
+    // const handleSearch = () => {
+    //     filterSearch(destination)
+    //     setDestination("")
+    //     setAdults(1)
+    //     setChildren(0)
+    //     setRooms(1)
 
+    // }
+
+    const [query, setQuery] = useState("");
+    const [, setLoading] = useState(false);
+    const [suggestions, setSuggestions] = useState([]);
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [countries, setCountries] = useState([])
+
+    useEffect(() => {
+        if (query === "") {
+            setSuggestions([]);
+        } else {
+            setSelectedLocation(null);
+            let out = countries
+                .filter((item) =>
+                    item.name.toLowerCase().indexOf(query.toLocaleLowerCase()) !== -1 ? true : false
+                )
+                .map((item) => {
+                    return { id: item?.id, name: item?.name }
+                });
+            setSuggestions(out);
+            console.log(out);
+            // setLoading(false);
+        }
+    }, [query]);
+
+    useEffect(() => {
+        const getData = async () => {
+            await fetchData('/Provinces').then((response) => setCountries(response)).catch((e) => console.log(e));
+        }
+        getData()
+    }, [])
+
+    const handleSearch = () => {
+
+        const formatDate = (date) => {
+            return date.toISOString();
+        };
+
+        if (selectedLocation && initvalue && endvalue && adults && rooms) {
+            window.location.href = `/searchRestaurant?provinceId=${selectedLocation?.id}&checkInDate=${formatDate(endvalue)}&tableSize=${adults}`;
+        } else {
+            alert("Please fill all fields");
+        }
     }
+
 
 
 
@@ -108,14 +155,26 @@ export const SearchRestaurantSideNav = ({ filterSearch }) => {
             Search
         </p>
         <div className={styles.destination}>
-            <p>Destination/property name:</p>
+            <p>Địa danh / Địa điểm:</p>
             <div>
                 <svg aria-hidden="true" fill="#838181" focusable="false" height="20" role="presentation" width="20" viewBox="0 0 24 24"><path d="M17.464 6.56a8.313 8.313 0 1 1-15.302 6.504A8.313 8.313 0 0 1 17.464 6.56zm1.38-.586C16.724.986 10.963-1.339 5.974.781.988 2.9-1.337 8.662.783 13.65c2.12 4.987 7.881 7.312 12.87 5.192 4.987-2.12 7.312-7.881 5.192-12.87zM15.691 16.75l7.029 7.03a.75.75 0 0 0 1.06-1.06l-7.029-7.03a.75.75 0 0 0-1.06 1.06z"></path></svg>
-                <input type="text" placeholder="Search Your Restaurant" onChange={(e) => setDestination(e.target.value)} />
+                {/* <input type="text" placeholder="Bạn muốn đi đâu?" onChange={(e) => setDestination(e.target.value)} /> */}
+                <Searchbar
+                    className={styles.suggestions}
+                    value={query}
+                    setQuery={setQuery}
+                    loading={false}
+                    setLoading={setLoading}
+                    suggestions={suggestions}
+                    setSuggestions={setSuggestions}
+                    onChange={(value) => setQuery(value)}
+                    placeholder={"Chọn địa điểm muốn thuê phòng?"}
+                    setSelectedLocation={setSelectedLocation}
+                />
             </div>
         </div>
         <div className={styles.startDate}>
-            <p>Check-in date</p>
+        <p>Ngày đặt</p>
             <div>
                 <svg aria-hidden="true" fill="#838181" focusable="false" height="20" role="presentation" width="20" viewBox="0 0 24 24"><path d="M22.502 13.5v8.25a.75.75 0 0 1-.75.75h-19.5a.75.75 0 0 1-.75-.75V5.25a.75.75 0 0 1 .75-.75h19.5a.75.75 0 0 1 .75.75v8.25zm1.5 0V5.25A2.25 2.25 0 0 0 21.752 3h-19.5a2.25 2.25 0 0 0-2.25 2.25v16.5A2.25 2.25 0 0 0 2.252 24h19.5a2.25 2.25 0 0 0 2.25-2.25V13.5zm-23.25-3h22.5a.75.75 0 0 0 0-1.5H.752a.75.75 0 0 0 0 1.5zM7.502 6V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0zm10.5 0V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0z"></path></svg>
                 <input type="text" placeholder="Mon 30 Aug" onClick={handleInitDate} value={`${currentDay} ${currentDayNum} ${currentMonth}`} />
@@ -123,7 +182,7 @@ export const SearchRestaurantSideNav = ({ filterSearch }) => {
             </div>
         </div>
         <div className={styles.endDate}>
-            <p>Check-in time</p>
+        <p>Giờ đặt</p>
             <div>
                 <svg aria-hidden="true" fill="#838181" focusable="false" height="20" role="presentation" width="20" viewBox="0 0 24 24"><path d="M22.502 13.5v8.25a.75.75 0 0 1-.75.75h-19.5a.75.75 0 0 1-.75-.75V5.25a.75.75 0 0 1 .75-.75h19.5a.75.75 0 0 1 .75.75v8.25zm1.5 0V5.25A2.25 2.25 0 0 0 21.752 3h-19.5a2.25 2.25 0 0 0-2.25 2.25v16.5A2.25 2.25 0 0 0 2.252 24h19.5a2.25 2.25 0 0 0 2.25-2.25V13.5zm-23.25-3h22.5a.75.75 0 0 0 0-1.5H.752a.75.75 0 0 0 0 1.5zM7.502 6V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0zm10.5 0V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0z"></path></svg>
                 <input type="time" style={{ width: '80%' }} />
@@ -135,7 +194,7 @@ export const SearchRestaurantSideNav = ({ filterSearch }) => {
                 Number of persons
             </p>
 
-            <div style={{alignItems: 'center'}}>
+            <div style={{ alignItems: 'center' }}>
                 <svg class="text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-width="2" d="M7 17v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3Zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 </svg>

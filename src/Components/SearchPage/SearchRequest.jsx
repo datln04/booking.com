@@ -1,6 +1,8 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import styles from "./SearchRequest.module.css"
 import Calendar from "react-calendar"
+import { fetchData } from "../../Utils/Service"
+import { Searchbar } from "../SearchDeals/Suggestion/Searchbar"
 
 
 export const SearchRequest = ({ filterSearch }) => {
@@ -22,6 +24,50 @@ export const SearchRequest = ({ filterSearch }) => {
     const [adult, setAdult] = useState(false)
     const [child, setChild] = useState(false)
     const [room, setRoom] = useState(false)
+
+    const [query, setQuery] = useState("");
+    const [, setLoading] = useState(false);
+    const [suggestions, setSuggestions] = useState([]);
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [countries, setCountries] = useState([])
+
+    useEffect(() => {
+        if (query === "") {
+            setSuggestions([]);
+        } else {
+            setSelectedLocation(null);
+            let out = countries
+                .filter((item) =>
+                    item.name.toLowerCase().indexOf(query.toLocaleLowerCase()) !== -1 ? true : false
+                )
+                .map((item) => {
+                    return { id: item?.id, name: item?.name }
+                });
+            setSuggestions(out);
+            console.log(out);
+            // setLoading(false);
+        }
+    }, [query]);
+
+    useEffect(() => {
+        const getData = async () => {
+            await fetchData('/Provinces').then((response) => setCountries(response)).catch((e) => console.log(e));
+        }
+        getData()
+    }, [])
+
+    const handleSearch = () => {
+
+        const formatDate = (date) => {
+            return date.toISOString();
+        };
+
+        if (selectedLocation && initvalue && endvalue && adults && rooms) {
+            window.location.href = `/search?provinceId=${selectedLocation?.id}&checkInDate=${formatDate(initvalue)}&checkOutDate=${formatDate(endvalue)}&persons=${adults}&rooms=${rooms}`;
+        } else {
+            alert("Please fill all fields");
+        }
+    }
 
     const handleInitDate = () => {
         setInitDate(!intiDate)
@@ -91,14 +137,14 @@ export const SearchRequest = ({ filterSearch }) => {
         setRoom(!room)
     }
 
-    const handleSearch = () => {
-        filterSearch(destination)
-        setDestination("")
-        setAdults(1)
-        setChildren(0)
-        setRooms(1)
+    // const handleSearch = () => {
+    //     filterSearch(destination)
+    //     setDestination("")
+    //     setAdults(1)
+    //     setChildren(0)
+    //     setRooms(1)
 
-    }
+    // }
 
 
 
@@ -111,7 +157,19 @@ export const SearchRequest = ({ filterSearch }) => {
             <p>Địa danh / Địa điểm:</p>
             <div>
                 <svg aria-hidden="true" fill="#838181" focusable="false" height="20" role="presentation" width="20" viewBox="0 0 24 24"><path d="M17.464 6.56a8.313 8.313 0 1 1-15.302 6.504A8.313 8.313 0 0 1 17.464 6.56zm1.38-.586C16.724.986 10.963-1.339 5.974.781.988 2.9-1.337 8.662.783 13.65c2.12 4.987 7.881 7.312 12.87 5.192 4.987-2.12 7.312-7.881 5.192-12.87zM15.691 16.75l7.029 7.03a.75.75 0 0 0 1.06-1.06l-7.029-7.03a.75.75 0 0 0-1.06 1.06z"></path></svg>
-                <input type="text" placeholder="Bạn muốn đi đâu?" onChange={(e) => setDestination(e.target.value)} />
+                {/* <input type="text" placeholder="Bạn muốn đi đâu?" onChange={(e) => setDestination(e.target.value)} /> */}
+                <Searchbar
+                    className={styles.suggestions}
+                    value={query}
+                    setQuery={setQuery}
+                    loading={false}
+                    setLoading={setLoading}
+                    suggestions={suggestions}
+                    setSuggestions={setSuggestions}
+                    onChange={(value) => setQuery(value)}
+                    placeholder={"Chọn địa điểm muốn thuê phòng?"}
+                    setSelectedLocation={setSelectedLocation}
+                />
             </div>
         </div>
         <div className={styles.startDate}>

@@ -26,15 +26,19 @@ export const SearchDeals = () => {
     const [query, setQuery] = React.useState("");
     const [, setLoading] = React.useState(false);
     const [suggestions, setSuggestions] = React.useState([]);
-    useEffect(() => {
+    const [selectedLocation, setSelectedLocation] = React.useState(null);
+    useEffect(() => {        
         if (query === "") {
             setSuggestions([]);
-        } else {            
+        } else {        
+            setSelectedLocation(null);    
             let out = countries
                 .filter((item) =>
                     item.name.toLowerCase().indexOf(query.toLocaleLowerCase()) !== -1 ? true : false
                 )
-                .map((item) => item.name);
+                .map((item) => {
+                    return {id: item?.id, name: item?.name}
+                });
             setSuggestions(out);
             console.log(out);
             // setLoading(false);
@@ -101,6 +105,19 @@ export const SearchDeals = () => {
         })
     }
 
+    const handleSearch = () => {
+
+        const formatDate = (date) => {
+            return date.toISOString();
+        };
+
+        if (selectedLocation && initvalue && endvalue && adults && rooms) {
+            window.location.href = `/search?provinceId=${selectedLocation?.id}&checkInDate=${formatDate(initvalue)}&checkOutDate=${formatDate(endvalue)}&persons=${adults}&rooms=${rooms}`;
+        } else {
+            alert("Please fill all fields");
+        }
+    }
+
 
     return <div className={styles.main}>
 
@@ -133,6 +150,7 @@ export const SearchDeals = () => {
                             setSuggestions={setSuggestions}
                             onChange={(value) => setQuery(value)}
                             placeholder={"Chọn địa điểm muốn thuê phòng?"}
+                            setSelectedLocation={setSelectedLocation}
                         />
 
                     </div>
@@ -306,10 +324,10 @@ export const SearchDeals = () => {
                 </div>
 
                 <div className={styles.button}>
-                    <Link to="/search">
+                    <div onClick={handleSearch}>
 
                         <button>Tìm kiếm</button>
-                    </Link>
+                    </div>
                 </div>
             </div>
             {/* <div className={styles.lowerText}>

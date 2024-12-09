@@ -14,6 +14,9 @@ import Attraction from "./Attraction"
 import { SearchAttractionPage } from "../Components/Attraction/SearchPage/SearchAttractionPage"
 import AttractionDetail from "../Components/Attraction/AttractionDetail/AttractionDetail"
 import Register from "../Components/Register/Register"
+import Completion from "../Utils/Completion"
+import StripePayment from "../Utils/StripePayment"
+import PaymentSuccess from "../Utils/PaymentSuccess"
 
 export const Routes = () => {
 
@@ -74,6 +77,8 @@ export const Routes = () => {
                 <AttractionDetail />
             </Route>
 
+            <Route path="/payment"><StripePayment /></Route>
+            <Route path="/success" element={<PaymentSuccess />} />
         </Switch>
 
     </>

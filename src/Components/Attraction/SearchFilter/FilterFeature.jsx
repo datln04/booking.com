@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import styles from "./FilterFeature.module.css";
-import { attractions } from '../../../Utils/mock';
+// import { attractions } from '../../../Utils/mock';
 
 export const FilterFeature = ({
+  filterData,
   filterLocation,
   filterRating,
   filterReviewCount,
@@ -22,7 +23,8 @@ export const FilterFeature = ({
 
   useEffect(() => {
     const countOccurrences = (key) => {
-      return attractions.reduce((acc, attraction) => {
+      return filterData?.reduce((acc, attraction) => {
+        console.log(attraction);
         acc[attraction[key]] = (acc[attraction[key]] || 0) + 1;
         return acc;
       }, {});
@@ -65,20 +67,20 @@ export const FilterFeature = ({
     <div className={styles.filterFeatureContainer}>
       <h2 className={styles.header}>Lọc theo:</h2>
 
-      <div className={styles.filterSection}>
+      {/* <div className={styles.filterSection}>
         <h3>Địa điểm</h3>
         {renderFilterOptions(locationCounts, filterLocation)}
-      </div>
+      </div> */}
 
-      <div className={styles.filterSection}>
+      {/* <div className={styles.filterSection}>
         <h3>Đánh giá</h3>
         {renderFilterOptions(ratingCounts, filterRating)}
-      </div>
+      </div> */}
 
-      <div className={styles.filterSection}>
+      {/* <div className={styles.filterSection}>
         <h3>Số lượng đánh giá</h3>
         {renderFilterOptions(reviewCountCounts, filterReviewCount)}
-      </div>
+      </div> */}
 
       <div className={styles.filterSection}>
         <h3>Giá người lớn</h3>
@@ -108,15 +110,15 @@ export const FilterFeature = ({
         <p>Khoảng giá được chọn: ${childPriceRange[0]} - ${childPriceRange[1]}</p>
       </div>
 
-      <div className={styles.filterSection}>
+      {/* <div className={styles.filterSection}>
         <h3>Thời gian</h3>
         {renderFilterOptions(durationCounts, filterDuration)}
-      </div>
+      </div> */}
 
-      <div className={styles.filterSection}>
+      {/* <div className={styles.filterSection}>
         <h3>Điểm nổi bật</h3>
         {renderFilterOptions(highlightsCounts, filterHighlights)}
-      </div>
+      </div> */}
     </div>
 
   );

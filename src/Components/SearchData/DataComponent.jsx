@@ -3,23 +3,21 @@ import styles from "../SearchData/DataComponent.module.css";
 import { Link } from "react-router-dom";
 
 const DataComponent = ({
-  url,
   id,
-  view,
+  hotelId,
+  roomType,
   price,
-  name,
-  city,
-  distance,
-  bedSize,
+  availabilityStatus,
+  bedType,
+  maxGuests,
   roomSize,
-  cancelationPolicy,
-  cancellation,
-  reviews,
-  rating,
-  breakFast,
-  availability,
-  availableRooms,
-  discountedPrice,
+  amenities,
+  isDeleted,
+  checkInDate,
+  checkOutDate,
+  starRating,
+  url,
+  person
 }) => {
   const lab = "Xem tình trạng phòng >";
   return (
@@ -28,7 +26,7 @@ const DataComponent = ({
         <img src={url} alt="Hình ảnh khách sạn" />
       </div>
       <div className={styles.datadiv}>
-        <h3 className={styles.h3}>{name}</h3>
+        <h3 className={styles.h3}>{roomType}</h3>
 
         <div>
           <p
@@ -38,23 +36,14 @@ const DataComponent = ({
               cursor: "pointer",
             }}
           >
-            {city}
+            {availabilityStatus}
           </p>
-          <p
-            style={{
-              color: "#0071C2",
-              textDecoration: "underline",
-              cursor: "pointer",
-            }}
-          >
-            {/* Hiển thị trên bản đồ */}
-          </p>
-          <p>{distance} km từ trung tâm</p>
+          <p>{roomSize}</p>
         </div>
         <h5 style={{ padding: "0", marginTop: "4px", marginBottom: "6px" }}>
           {roomSize}
         </h5>
-        <p style={{ padding: "0", margin: "0", fontSize: "13px" }}>{bedSize}</p>
+        <p style={{ padding: "0", margin: "0", fontSize: "13px" }}>{bedType}</p>
         <h5
           style={{
             color: "green",
@@ -63,17 +52,7 @@ const DataComponent = ({
             marginBottom: "0",
           }}
         >
-          Bữa sáng {breakFast}
-        </h5>
-        <h5
-          style={{
-            color: "green",
-            padding: "0",
-            marginTop: "3px",
-            marginBottom: "0",
-          }}
-        >
-          {cancellation} hủy miễn phí • {cancelationPolicy}
+          {amenities}
         </h5>
         <p
           style={{
@@ -84,10 +63,10 @@ const DataComponent = ({
             marginTop: "6px",
           }}
         >
-          Bạn có thể hủy sau, hãy đặt mức giá tốt này ngay hôm nay!
+          Tối đa {maxGuests} khách
         </p>
         <h5 style={{ color: "brown", padding: "0", marginTop: "2px" }}>
-          Chỉ còn {availableRooms} phòng với mức giá này trên trang web của chúng tôi
+          {availabilityStatus === "Available" ? "Phòng còn trống" : "Hết phòng"}
         </h5>
       </div>
       <div>
@@ -102,30 +81,8 @@ const DataComponent = ({
                 textAlign: "right",
               }}
             >
-              {view}
+              {starRating ? `${starRating} sao` : "Chưa có đánh giá"}
             </h5>
-            <p
-              style={{
-                padding: "0",
-                margin: "0",
-                color: "gray",
-                fontSize: "13px",
-              }}
-            >
-              {reviews} Đánh giá
-            </p>
-          </div>
-          <div
-            style={{
-              backgroundColor: "#003580",
-              color: "white",
-              padding: "10px",
-              marginLeft: "5px",
-              fontWeight: "bold",
-              borderRadius: "5px 5px 5px 5px",
-            }}
-          >
-            {rating}
           </div>
         </div>
 
@@ -138,23 +95,13 @@ const DataComponent = ({
               fontSize: "13px",
             }}
           >
-            1 đêm, 2 người lớn
+            1 đêm, {maxGuests} người lớn
           </p>
           <p style={{ margin: "0", padding: "0" }}>
             <span
-              style={{
-                color: "red",
-                textDecoration: "line-through",
-                fontSize: "14px",
-              }}
-            >
-              ₹ {price}
-            </span>
-            <span
               style={{ fontSize: "22px", fontWeight: "600" }}
             >
-              {" "}
-              ₹ {discountedPrice}
+              $ {price}
             </span>
           </p>
           <p
@@ -167,7 +114,7 @@ const DataComponent = ({
           >
             bao gồm thuế và phí
           </p>
-          <Link to={`/search/${id}`}>
+          <Link to={`/search/${id}?checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&person=${person}`}>
             <button
               style={{
                 backgroundColor: "#0071C2",

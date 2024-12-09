@@ -118,6 +118,7 @@ function SearchCarRequest() {
   const [, setLoading] = React.useState(false);
   const [suggestions, setSuggestions] = React.useState([]);
   const [countries, setCountries] = useState([])
+  const [selectedLocation, setSelectedLocation] = React.useState(null);
 
 
   const handleChange = (event) => {
@@ -173,7 +174,9 @@ function SearchCarRequest() {
         .filter((item) =>
           item.name.toLowerCase().indexOf(query.toLocaleLowerCase()) !== -1 ? true : false
         )
-        .map((item) => item.name);
+        .map((item) => {
+          return { id: item?.id, name: item?.name }
+        });
       setSuggestions(out);
       console.log(out);
       // setLoading(false);
@@ -186,6 +189,30 @@ function SearchCarRequest() {
     }
     getData()
   }, [])
+
+  const handleSearch = () => {
+      const formatDate = (date, time) => {
+        const [hours, minutes] = time.split(':');
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        return date.toISOString();
+      };
+  
+      if (selectedLocation && pickupDate && pickupTime && dropoffDate && dropoffTime) {
+        const checkInDate = formatDate(pickupDate, pickupTime);
+        const checkOutDate = formatDate(dropoffDate, dropoffTime);
+  
+        if (new Date(checkInDate) >= new Date(checkOutDate)) {
+          alert('Check-in date must be before check-out date.');
+          return;
+        }
+  
+        window.location.href = `/searchCar?provinceId=${selectedLocation?.id}&checkInDate=${checkInDate}&checkOutDate=${checkOutDate}`;
+      } else {
+        alert('Please fill in all fields.');
+      }
+    }
+
 
   return (
     <div className={styles.main}>
@@ -217,6 +244,7 @@ function SearchCarRequest() {
                 setSuggestions={setSuggestions}
                 onChange={(value) => setQuery(value)}
                 placeholder={"Chọn địa điểm lấy xe?"}
+                setSelectedLocation={setSelectedLocation}
               />
             </div>
           </div>
@@ -273,9 +301,9 @@ function SearchCarRequest() {
             />
           </div>
           <div className={styles.button}>
-            <a href="/searchRestaurant">
-              <button onClick={handleSubmit}>Tìm kiếm</button>
-            </a>
+            <div onClick={handleSearch}>
+              <button style={{ height: '66px' }}>Tìm kiếm</button>
+            </div>
           </div>
         </div>
       </div>

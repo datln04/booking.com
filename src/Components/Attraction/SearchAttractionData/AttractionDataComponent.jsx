@@ -9,9 +9,10 @@ export const AttractionDataComponent = ({
   location,
   rating,
   reviews,
-  price,
+  priceAdult,
+  priceChild,
   duration,
-  highlights,
+  availabilityStatus,
   image,
   description,
   isBooking
@@ -31,7 +32,7 @@ export const AttractionDataComponent = ({
         </div>
 
         <h5 style={{ color: "green", padding: "0", marginTop: "6px", marginBottom: "0" }}>
-          Điểm nổi bật: {highlights.join(", ")}
+          Trạng thái: {availabilityStatus}
         </h5>
         <p>{description}</p>
         <div style={{ marginTop: "10px" }}>
@@ -40,7 +41,7 @@ export const AttractionDataComponent = ({
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}>
         <div style={{ marginTop: "10px", textAlign: "right" }}>
-          <p><FontAwesomeIcon icon={faDollarSign} /> Giá:<p>{`Người lớn $`}<b>{price.adult}</b></p> Trẻ em {`$`}<b>{price.child}</b></p>
+          <p><FontAwesomeIcon icon={faDollarSign} /> Giá:<p>{`Người lớn $`}<b>{priceAdult}</b></p> Trẻ em {`$`}<b>{priceChild}</b></p>
           {!isBooking && <Link to={`/attraction/${id}`}>
             <button style={{ backgroundColor: "#0071C2", color: "white", border: "none", borderRadius: "3px", padding: "15px", marginTop: "10px", cursor: "pointer" }}>
               {lab}

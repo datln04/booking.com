@@ -1,6 +1,7 @@
 
 import { Link } from "react-router-dom";
 import styles from "./RestaurantDataComponent.module.css";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
 
 const RestaurantDataComponent = ({
   url,
@@ -20,6 +21,12 @@ const RestaurantDataComponent = ({
   discountMessage
 }) => {
   const lab = "See More >";
+  const location = useLocation(); // Get the location object
+    const queryParams = new URLSearchParams(location.search);
+
+    // Extract parameters
+    const checkInDate = queryParams.get('checkInDate');
+    const tableSize = queryParams.get('tableSize');
   return (
     <div className={styles.maindiv}>
       <div className={styles.imgdiv}>
@@ -38,18 +45,18 @@ const RestaurantDataComponent = ({
         </div>
 
         <h5 style={{ padding: "0", marginTop: "4px", marginBottom: "6px" }}>
-          Cuisine: {cuisineType}
+         Ẩm thực: {cuisineType?.cuisineName}
         </h5>
         <p style={{ padding: "0", margin: "0", fontSize: "13px" }}>
-          Price Range: {priceRange}
+          {priceRange}
         </p>
 
         <h5 style={{ color: "green", padding: "0", marginTop: "6px", marginBottom: "0" }}>
-          Dietary Options: {dietaryOptions.join(", ")}
+          Chế độ ăn uống: {dietaryOptions?.map((option) => option?.dietaryOption?.optionName + ", ")}
         </h5>
 
         <h5 style={{ color: "brown", padding: "0", marginTop: "2px" }}>
-          Operating Hours: {operatingHours.join(", ")}
+         Giờ mở cửa: {operatingHours}
         </h5>
 
         <p style={{ color: "green", padding: "0", margin: "0", fontSize: "13px", marginTop: "6px" }}>
@@ -60,21 +67,21 @@ const RestaurantDataComponent = ({
         <div style={{ float: "right" }}>
           <div style={{ marginRight: "3px" }}>
             <h5 style={{ padding: "0", margin: "0", marginTop: "5px", fontSize: "16px", textAlign: "right" }}>
-              {reviews} Reviews
+              {reviews || 0} Bình luận
             </h5>
           </div>
           <div style={{float: 'right'}}>
             <div style={{ backgroundColor: "#003580", color: "white", padding: "10px", fontWeight: "bold", borderRadius: "5px", width: 'fit-content' }}>
-              {rating}
+              {rating} Đánh giá
             </div>
           </div>
         </div>
 
         <div style={{ marginTop: "75px", textAlign: "right" }}>
           <p style={{ padding: "0", margin: "0", color: "gray", fontSize: "13px" }}>
-            {operatingHours[0]} - {operatingHours[operatingHours.length - 1]}
+            {operatingHours}
           </p>
-          <Link to={`/restaurant/${id}`}>
+          <Link to={`/restaurant/${id}?checkInDate=${checkInDate}&tableSize=${tableSize}`}>
             <button style={{ backgroundColor: "#0071C2", color: "white", border: "none", borderRadius: "3px", padding: "15px", marginTop: "10px", cursor: "pointer" }}>
               {lab}
             </button>

@@ -1,55 +1,134 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FilterFeature } from '../SearchFilter/FilterFeature';
 import { CarDataComponent } from '../SearchCarData/CarDataComponent';
 import styles from "../../SearchPage/SearchRequest.module.css"
-import { carData } from '../../../Utils/mock';
+// import { carData } from '../../../Utils/mock';
 import { Navbar } from '../../Navbar/Navbar';
+import { useLocation } from 'react-router-dom/cjs/react-router-dom';
+import { fetchFilteredData, fetchFilteredDataWithoutFilter } from '../../../Utils/Service';
 
 export const SearchCarPage = () => {
-    const [filteredData, setFilteredData] = useState(carData);
+    const [showData, setShowData] = useState(null)
+    const [filterData, setFilterData] = useState(null);
+    const location = useLocation(); // Get the location object
+    const queryParams = new URLSearchParams(location.search);
 
-    const filterManufacturer = (value) => {
-        setFilteredData(carData.filter(car => car.manufacturer === value));
-    };
+    // Extract parameters
+    const provinceId = queryParams.get('provinceId');
+    const checkInDate = queryParams.get('checkInDate');
+    const checkOutDate = queryParams.get('checkOutDate');
+    // const persons = queryParams.get('persons');
+    useEffect(() => {
+        getData()
+    }, [location]);
+
+
+    const getData = async () => {
+        const filter = {
+            // provinceId: parseInt(provinceId), // Ensure it's a number
+            checkInDate: checkInDate,
+            checkOutDate: checkOutDate,
+            filters: [
+                {
+                    field: "ProvinceId",
+                    operator: "Equal",
+                    value: parseInt(provinceId), // Static or dynamic value, adjust as needed
+                },
+            ],
+            includes: ["TransportServiceFeatures", "TransportServiceFeatures.Feature"],
+            logic: "string", // Replace with appropriate logic value
+            pageSize: 0,
+            pageNumber: 0,
+            all: true,
+        };
+        let data = await fetchFilteredDataWithoutFilter('/TransportServices/SearchTransportServices', filter).then((response) => {
+            if (response && response?.length > 0) {
+                return response?.map((e) => {
+                    const requestObject = {
+                        filters: [
+                            {
+                                field: "ServiceId",
+                                operator: "Equal",
+                                value: e?.id,
+                            },
+                            {
+                                field: "ServiceType",
+                                operator: "Contains",
+                                value: "TransportService",
+                            },
+                            {
+                                field: "ImageType",
+                                operator: "Contains",
+                                value: "Image",
+                            },
+                        ],
+                        logic: "And",
+                        pageSize: 0,
+                        pageNumber: 0,
+                        all: true,
+                    };
+
+                    return fetchFilteredData('/Images', requestObject).then(resp => {
+                        if (resp) {
+                            const image = resp.find((img) => img.serviceId === e.id);
+                            return { ...e, url: image?.imageUrl };
+                        }
+                    })
+                })
+            }
+        });
+        if (data) {
+            data = await Promise.all(data);
+            setShowData(data);
+            setFilterData(data);
+        } else {
+            setShowData([]);
+            setFilterData([]);
+        }
+    }
+
+    // const filterManufacturer = (value) => {
+    //     setFilterData(showData.filter(car => car.manufacturer === value));
+    // };
 
     const filterModel = (value) => {
-        setFilteredData(carData.filter(car => car.model === value));
+        setFilterData(showData.filter(car => car.model == value));
     };
 
     const filterYear = (value) => {
-        setFilteredData(carData.filter(car => car.year === value));
+        setFilterData(showData.filter(car => car.year == value));
     };
 
     const filterColor = (value) => {
-        setFilteredData(carData.filter(car => car.color === value));
+        setFilterData(showData.filter(car => car.color == value));
     };
 
     const filterFuelType = (value) => {
-        setFilteredData(carData.filter(car => car.fuelType === value));
+        setFilterData(showData.filter(car => car.fuelType == value));
     };
 
     const filterTransmission = (value) => {
-        setFilteredData(carData.filter(car => car.transmission === value));
+        setFilterData(showData.filter(car => car.transmission == value));
     };
 
     const filterSeatingCapacity = (value) => {
-        setFilteredData(carData.filter(car => car.seatingCapacity === value));
+        setFilterData(showData.filter(car => car.seatingCapacity == value));
     };
 
     const filterRentalPrice = (value) => {
-        setFilteredData(carData.filter(car => car.rentalPrice === value));
+        setFilterData(showData.filter(car => car.rentalPrice == value));
     };
 
     const filterAvailability = (value) => {
-        setFilteredData(carData.filter(car => car.availability === value));
+        setFilterData(showData.filter(car => car.availability == value));
     };
 
     const filterMileage = (value) => {
-        setFilteredData(carData.filter(car => car.mileage === value));
+        setFilterData(showData.filter(car => car.mileage == value));
     };
 
     const filterLocation = (value) => {
-        setFilteredData(carData.filter(car => car.location === value));
+        setFilterData(showData.filter(car => car.location == value));
     };
 
     return (
@@ -60,7 +139,8 @@ export const SearchCarPage = () => {
             <div className={styles.serachPageContainer}>
                 <div className={styles.left}>
                     <FilterFeature
-                        filterManufacturer={filterManufacturer}
+                        carData={showData}
+                        // filterManufacturer={filterManufacturer}
                         filterModel={filterModel}
                         filterYear={filterYear}
                         filterColor={filterColor}
@@ -74,28 +154,31 @@ export const SearchCarPage = () => {
                     />
                 </div>
 
-                <div style={{width: '90%', paddingLeft: '20px'}}>
-                    {filteredData.map((car) => (
-                        <CarDataComponent
-                            key={car.id}
-                            id={car.id}
-                            make={car.make}
-                            model={car.model}
-                            year={car.year}
-                            color={car.color}
-                            fuelType={car.fuelType}
-                            transmission={car.transmission}
-                            seatingCapacity={car.seatingCapacity}
-                            rentalPricePerDay={car.rentalPricePerDay}
-                            availabilityStatus={car.availability}
-                            mileage={car.mileage}
-                            location={car.location}
-                            licensePlate={car.licensePlate}
-                            features={car.features}
-                            isBooking={false}
-                        />
-                    ))}
-                </div>
+                {
+                    filterData && filterData.length > 0 && <div style={{ width: '90%', paddingLeft: '20px' }}>
+                        {filterData.map((car) => (
+                            <CarDataComponent
+                                key={car.id}
+                                id={car.id}
+                                make={car.make}
+                                model={car.model}
+                                year={car.year}
+                                color={car.color}
+                                fuelType={car.fuelType}
+                                transmission={car.transmission}
+                                seatingCapacity={car.seatingCapacity}
+                                rentalPricePerDay={car.rentalPricePerDay}
+                                availabilityStatus={car.availability}
+                                mileage={car.mileage}
+                                location={car.location}
+                                licensePlate={car.licensePlate}
+                                features={car?.transportServiceFeatures}
+                                isBooking={false}
+                                url={car.url}
+                            />
+                        ))}
+                    </div>
+                }
             </div>
         </>
     );

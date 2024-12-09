@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HotelData } from "../../Utils/HotelData";
 import FooterBlue from "../Footer/FooterBlue";
 import { Navbar } from "../Navbar/Navbar";
@@ -6,48 +6,125 @@ import { DataComponent } from "../SearchData/DataComponent";
 import { FilterFeature } from "./FilterFeature";
 import { SearchRequest } from "./SearchRequest";
 import styles from "./SearchRequest.module.css"
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
+import { fetchData, fetchFilteredData, fetchFilteredDataWithoutFilter } from "../../Utils/Service";
 
 
 
 export const SearchPage = () => {
-    const [showData, setShowData] = useState(HotelData)
+    const [showData, setShowData] = useState(null)
     const [price, setPrice] = useState(false)
     const [star, setStar] = useState(false)
-    // const [policy, setPolicy] = useState(false)
+    // const [image, setImage] = useState(null);
+   
+    const [filterData, setFilterData] = useState(null);
+    const location = useLocation(); // Get the location object
+    const queryParams = new URLSearchParams(location.search);
 
+    // Extract parameters
+    const provinceId = queryParams.get('provinceId');
+    const checkInDate = queryParams.get('checkInDate');
+    const checkOutDate = queryParams.get('checkOutDate');
+    const persons = queryParams.get('persons');
+    useEffect(() => {
+        getData()
+    }, [location]);
 
-    const filterPrice = (e) => {
+   
+    const getData = async () => {
+        const filter = {
+            provinceId: parseInt(provinceId), // Ensure it's a number
+            checkInDate: checkInDate,
+            checkOutDate: checkOutDate,
+            filters: [
+                {
+                    field: "MaxGuests",
+                    operator: "GreaterThanOrEqual",
+                    value: parseInt(persons), // Static or dynamic value, adjust as needed
+                },
+            ],
+            includes: [],
+            logic: "string", // Replace with appropriate logic value
+            pageSize: 0,
+            pageNumber: 0,
+            all: true,
+        };
+        let data = await fetchFilteredDataWithoutFilter('/Rooms/SearchRooms', filter).then((response) => {
+            if (response && response?.length > 0) {
+                return response?.map((e) => {
+                    const requestObject = {
+                        filters: [
+                            {
+                                field: "ServiceId",
+                                operator: "Equal",
+                                value: e?.id,
+                            },
+                            {
+                                field: "ServiceType",
+                                operator: "Contains",
+                                value: "Room",
+                            },
+                            {
+                                field: "ImageType",
+                                operator: "Contains",
+                                value: "Image",
+                            },
+                        ],
+                        logic: "And",
+                        pageSize: 0,
+                        pageNumber: 0,
+                        all: true,
+                    };
 
+                    return fetchFilteredData('/Images', requestObject).then(resp => {
+                        if (resp) {
+                            const image = resp.find((img) => img.serviceId === e.id);
+                            return { ...e, url: image?.imageUrl };
+                        }
+                    })
+                })
+            }
+        });
+        if (data) {
+            data = await Promise.all(data);
+            setShowData(data);
+            setFilterData(data);
+        } else {
+            setShowData([]);
+            setFilterData([]);
+        }
+    }    
+
+    const filterPrice = async (e) => {
         if (e.target.name === "price") {
             if (Number(e.target.value) === 1500) {
 
-                const filteredAbove1500 = HotelData.filter((el) => {
-
+                const filteredAbove1500 = showData.filter((el) => {
                     return (Number(el.price) > 1500)
                 })
-                setShowData([...filteredAbove1500])
+                setFilterData([...filteredAbove1500])
             }
             else if (Number(e.target.value) === 1000) {
 
-                const filteredAbove1500 = HotelData.filter((el) => {
+                const filteredAbove1500 = showData.filter((el) => {
 
                     return ((Number(el.price) >= 1000) && (Number(el.price) < 1500));
                 })
-                setShowData([...filteredAbove1500])
+                setFilterData([...filteredAbove1500])
             }
             else if (Number(e.target.value) === 0) {
 
-                const filteredAbove1500 = HotelData.filter((el) => {
+                const filteredAbove1500 = showData.filter((el) => {
 
                     return (Number(el.price) <= 1000)
                 })
-                setShowData([...filteredAbove1500])
+                setFilterData([...filteredAbove1500])
             }
 
             setPrice(!price)
         }
         else {
-            setShowData(HotelData)
+            setFilterData(showData)
         }
         /// console.log(e.target.value, e.target.checked, e.target.name);
 
@@ -65,7 +142,7 @@ export const SearchPage = () => {
 
         else {
 
-            const filteredAbove1500 = HotelData.filter((el) => {
+            const filteredAbove1500 = showData.filter((el) => {
 
                 return (Number(el.rating) === Number(e.target.value))
             })
@@ -74,45 +151,45 @@ export const SearchPage = () => {
 
         setStar(!star)
     }
-    const filterPolicy = (e) => {
-        if (star || price) {
+    // const filterPolicy = (e) => {
+    //     if (star || price) {
 
-            if (e.target.value === "cancellation") {
+    //         if (e.target.value === "cancellation") {
 
-                const filteredAbove1500 = showData.filter((el) => {
+    //             const filteredAbove1500 = showData.filter((el) => {
 
-                    return (el.cancellation === "Free")
-                })
-                setShowData([...filteredAbove1500])
-            }
-            if (e.target.value === "breakFast") {
+    //                 return (el.cancellation === "Free")
+    //             })
+    //             setShowData([...filteredAbove1500])
+    //         }
+    //         if (e.target.value === "breakFast") {
 
-                const filteredAbove1500 = showData.filter((el) => {
+    //             const filteredAbove1500 = showData.filter((el) => {
 
-                    return (el.breakFast === "Included")
-                })
-                setShowData([...filteredAbove1500])
-            }
-        }
-        else {
-            if (e.target.value === "cancellation") {
+    //                 return (el.breakFast === "Included")
+    //             })
+    //             setShowData([...filteredAbove1500])
+    //         }
+    //     }
+    //     else {
+    //         if (e.target.value === "cancellation") {
 
-                const filteredAbove1500 = HotelData.filter((el) => {
+    //             const filteredAbove1500 = HotelData.filter((el) => {
 
-                    return (el.cancellation === "Free")
-                })
-                setShowData([...filteredAbove1500])
-            }
-            if (e.target.value === "breakFast") {
+    //                 return (el.cancellation === "Free")
+    //             })
+    //             setShowData([...filteredAbove1500])
+    //         }
+    //         if (e.target.value === "breakFast") {
 
-                const filteredAbove1500 = HotelData.filter((el) => {
+    //             const filteredAbove1500 = HotelData.filter((el) => {
 
-                    return (el.breakFast === "Included")
-                })
-                setShowData([...filteredAbove1500])
-            }
-        }
-    }
+    //                 return (el.breakFast === "Included")
+    //             })
+    //             setShowData([...filteredAbove1500])
+    //         }
+    //     }
+    // }
     const filterSearch = (search) => {
 
         const filteredData = HotelData.filter((e) => {
@@ -127,42 +204,51 @@ export const SearchPage = () => {
         <div className={styles.serachPageContainer} >
             <div className={styles.left}>
                 <SearchRequest filterSearch={filterSearch} />
-                <FilterFeature filterPrice={filterPrice} filterStar={filterStar} filterPolicy={filterPolicy} />
+                <FilterFeature filterPrice={filterPrice} filterStar={filterStar} filterPolicy={null} />
             </div>
 
-            <div className={styles.hotelListContainer}>
-                {/* <ul className={styles.listOfHotels} > */}
+            {
+                filterData && filterData.length > 0 ? 
+                <div className={styles.hotelListContainer}>
+                    {/* <ul className={styles.listOfHotels} > */}
 
-                {
-                    showData.map((e, i) => {
-                        // console.log(e.url);
-
-
-                        return <DataComponent url={e.url}
-                            key={e.id}
-                            name={e.name} city={e.city} distance={e.distance}
-                            bedSize={e.bedSize} roomSize={e.roomSize}
-                            cancelationPolicy={e.cancelationPolicy}
-                            cancellation={e.cancellation}
-                            reviews={e.reviews}
-                            rating={e.rating}
-                            breakFast={e.breakFast}
-                            availability={e.availability}
-                            availableRooms={e.availableRooms}
-                            price={e.price}
-                            discountedPrice={e.discountedPrice}
-                            id={e.id}
-                            view={e.view}
-                        />
+                    {
+                        filterData.map((e, i) => {
+                            // console.log(e.url);
 
 
-                    })
-                }
+                            return (
+                                <DataComponent
+                                    key={e.id}
+                                    id={e.id}
+                                    hotelId={e.hotelId}
+                                    roomType={e.roomType}
+                                    price={e.price}
+                                    availabilityStatus={e.availabilityStatus}
+                                    bedType={e.bedType}
+                                    maxGuests={e.maxGuests}
+                                    roomSize={e.roomSize}
+                                    amenities={e.amenities}
+                                    isDeleted={e.isDeleted}
+                                    checkInDate={checkInDate}
+                                    checkOutDate={checkOutDate}
+                                    starRating={e.starRating}
+                                    url={e.url}
+                                    person={persons}
+                                />
+                            );
 
-                {/* </ul> */}
 
-            </div>
+                        })
+                    }
+
+                    {/* </ul> */}
+
+                </div>
+                : <h1>No Data Found</h1>
+            }
         </div>
+
 
         <FooterBlue />
 

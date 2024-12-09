@@ -118,6 +118,7 @@ function SearchRestaurantRequest() {
     arrivalTime: '',
     numberOfPersons: '2'
   });
+  const [selectedLocation, setSelectedLocation] = React.useState(null);
 
   const [query, setQuery] = React.useState("");
   const [, setLoading] = React.useState(false);
@@ -126,7 +127,6 @@ function SearchRestaurantRequest() {
 
   const handleChange = (event) => {
     const { id, value } = event.target;
-    console.log('id: ', id, 'value: ', value);
 
     setFormData((prevData) => ({
       ...prevData,
@@ -148,35 +148,6 @@ function SearchRestaurantRequest() {
     }));
     setShowCalendar(false);
   };
-
-  // return (
-  //   <form onSubmit={handleSubmit} className={styles.form}>
-  //     <InputField
-  //       id="location"
-  //       type="text"
-  //       value={formData.location}
-  //       onChange={handleChange}
-  //       placeholder="Location"
-  //     />
-  //     <InputField
-  //       id="arrivalDate"
-  //       type="date"
-  //       value={formData.arrivalDate}
-  //       onChange={handleChange}
-  //       placeholder="Arrival Date"
-  //     />
-  //     <InputField
-  //       id="arrivalTime"
-  //       type="time"
-  //       value={formData.arrivalTime}
-  //       onChange={handleChange}
-  //       placeholder="Arrival Time"
-  //     />
-  //     <div className={`${styles.inputField} ${styles.formElement}`}>
-  //       <button type="submit" className={styles.button}>Search</button>
-  //     </div>
-  //   </form>
-  // );
   const handleClear = () => {
     setFormData((prevData) => ({
       ...prevData,
@@ -192,7 +163,9 @@ function SearchRestaurantRequest() {
         .filter((item) =>
           item.name.toLowerCase().indexOf(query.toLocaleLowerCase()) !== -1 ? true : false
         )
-        .map((item) => item.name);
+        .map((item) => {
+          return {id: item?.id, name: item?.name}
+      });
       setSuggestions(out);
       console.log(out);
       // setLoading(false);
@@ -205,6 +178,24 @@ function SearchRestaurantRequest() {
     }
     getData()
   }, [])
+
+  const handleSearch = () => {
+    
+
+    if (selectedLocation && formData.arrivalDate && formData.arrivalTime && formData.numberOfPersons) {
+      const formatDate = (date, time) => {
+        const [hours, minutes] = time.split(':');
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        return date.toISOString();
+      };
+      const checkInDate = formatDate(formData.arrivalDate, formData.arrivalTime);
+      // const checkOutDate = formatDate(dropoffDate, dropoffTime);
+      window.location.href = `/searchRestaurant?provinceId=${selectedLocation?.id}&checkInDate=${checkInDate}&tableSize=${formData.numberOfPersons}`;
+    } else {
+      alert("Please fill all fields");
+    }
+  }
   return <div className={styles.main}>
 
     <div className={styles.searchDealsContainer}>
@@ -245,6 +236,8 @@ function SearchRestaurantRequest() {
               setSuggestions={setSuggestions}
               onChange={(value) => setQuery(value)}
               placeholder={"Chọn địa điểm cho nhà hàng?"}
+              setSelectedLocation={setSelectedLocation}
+
             />
           </div>
         </div>
@@ -289,9 +282,9 @@ function SearchRestaurantRequest() {
           </select>
         </div>
         <div className={styles.button}>
-          <a href="/searchRestaurant">
-            <button>Search</button>
-          </a>
+        <div onClick={handleSearch}>
+              <button style={{ height: '66px' }}>Tìm kiếm</button>
+            </div>
         </div>
       </div>
     </div>

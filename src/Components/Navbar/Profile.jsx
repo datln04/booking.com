@@ -1,43 +1,44 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import styles from "./Profile.module.css"
 
 
 export const Profile = () => {
-    const data = JSON.parse(localStorage.getItem("login"))
+    const [user, setUser] = useState(null);
     const [logout, setLogout] = useState(false)
-    let userData
-    if (data) {
-        userData = data
-    }
-    else {
-        userData = {
-            imageUrl: "#",
-            name: ""
+
+    useEffect(() => {
+        const data = JSON.parse(localStorage.getItem("login"))
+        if (data) {
+            setUser(data)
         }
-    }
+        else {
+            setUser({
+                imageUrl: "#",
+                name: ""
+            })
+        }
+    }, [])
     const handleLogout = () => {
         localStorage.removeItem("login")
-        document.location.href = "https://booking-com.netlify.app/"
+        document.location.href = "/"
         alert("Successfully Logged Out")
         // document.location.href = "https://booking-webapp-clone.herokuapp.com/"
 
     }
+    console.log(user);
 
-    return <>
-        <div className={styles.profile} onClick={() => setLogout(!logout)}>
-            <div>
-                <img src={userData.imageUrl} alt="userprofile" />
+    return <div>
+        {
+            user && <div className={styles.profile} onClick={() => setLogout(!logout)}>
+                <img src={user?.user?.image} alt="profile" />
+                <div>{user?.user?.fullName}</div>
             </div>
-            <div>
-                <h4>{userData.name}</h4>
-            </div>
-        </div>
+        }
         {
 
             logout && <div className={styles.logout} onClick={() => handleLogout()} >
                 <div>Logout</div>
             </div>
         }
-
-    </>
+    </div>
 }

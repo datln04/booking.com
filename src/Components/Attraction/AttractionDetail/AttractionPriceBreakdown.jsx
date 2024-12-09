@@ -16,18 +16,18 @@ const PriceItem = styled.div`
 const AttractionPriceBreakdown = ({ price }) => {
   return (
     <BreakdownContainer>
-      <h2>Car price breakdown</h2>
+      <h2>Attraction price breakdown</h2>
       <PriceItem>
         <p>Car hire charge</p>
         <p>₫{price}</p>
       </PriceItem>
-      <PriceItem>
+      {/* <PriceItem>
         <p>$74.50</p>
-      </PriceItem>
+      </PriceItem> */}
       <p>VND prices are approx. You'll pay in USD, because that's your local currency.</p>
       <PriceItem>
         <p>Price for 3 days:</p>
-        <p>approx. ₫{price}</p>
+        <p>approx. ₫{3*price}</p>
       </PriceItem>
     </BreakdownContainer>
   );

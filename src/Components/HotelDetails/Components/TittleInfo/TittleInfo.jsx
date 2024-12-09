@@ -267,24 +267,24 @@ export const TitleInfo = (props) => {
 
             <ImageDiv>
                 <ShortImage style={{ gridArea: "short1" }}>
-                    <img src={`${props.url_1}`} alt="Hình ảnh" />
+                    <img src={`${props?.url_2}`} alt="Hình ảnh" />
                 </ShortImage>
                 <ShortImage style={{ gridArea: "short2" }}>
-                    <img src={`${props.url_2}`} alt="Hình ảnh" />
+                    <img src={`${props?.url_3}`} alt="Hình ảnh" />
                 </ShortImage>
                 <LargeImage style={{ gridArea: "long" }}>
-                    <img src={`${props.url_3}`} alt="Hình ảnh" />
+                    <img src={`${props?.url_1}`} alt="Hình ảnh" />
                 </LargeImage>
             </ImageDiv>
 
             <FlexDiv>
-                <ImageBox style={{ backgroundImage: `url(${props.url_5})` }} />
-                <ImageBox style={{ backgroundImage: `url(${props.url_6})` }} />
-                <ImageBox style={{ backgroundImage: `url(${props.url_7})` }} />
-                <ImageBox style={{ backgroundImage: `url(${props.url_8})` }} />
+                <ImageBox style={{ backgroundImage: `url(${props?.url_4})` }} />
+                <ImageBox style={{ backgroundImage: `url(${props?.url_5})` }} />
+                <ImageBox style={{ backgroundImage: `url(${props?.url_6})` }} />
+                <ImageBox style={{ backgroundImage: `url(${props?.url_7})` }} />
                 <ImageBox style={{ background: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),url(${props.img})` }}>
                     <Text>
-                        <p>+32 hình ảnh</p>
+                        {props?.total > 9 ? `+${props?.total}` : <ImageBox style={{ backgroundImage: `url(${props?.url_8})` }} />}
                     </Text>
                 </ImageBox>
             </FlexDiv>

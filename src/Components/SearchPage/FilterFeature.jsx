@@ -173,7 +173,7 @@ export const FilterFeature = ({ filterPrice, filterStar, filterPolicy }) => {
           <p>{star5}</p>
         </div>
       </div>
-      <div className={styles.reservationPolicy}>
+      {/* <div className={styles.reservationPolicy}>
         <h3>Chính sách đặt phòng</h3>
         <div>
           <div>
@@ -199,7 +199,7 @@ export const FilterFeature = ({ filterPrice, filterStar, filterPolicy }) => {
           </div>
           <p>{breakfast}</p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

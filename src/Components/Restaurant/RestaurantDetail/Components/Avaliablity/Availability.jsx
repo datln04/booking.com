@@ -1,5 +1,8 @@
+import moment from 'moment';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import Payment from '../../../../../Utils/Payment';
+import CheckoutForm from '../../../../../Utils/CheckoutForm';
 
 const Div = styled.div`
   width: 100%;
@@ -96,22 +99,32 @@ const Tag = styled.div`
   }
 `;
 
-export const Availability = () => {
+export const Availability = (props) => {
   const [reserve, setReserve] = useState(false);
   const [user, setUser] = useState(false);
 
+  moment.locale('vi');
+  const formattedCheckInDate = moment(props?.checkInDate).format('dddd, DD MMMM, YYYY');
+  const formattedCheckOutDate = moment(props?.checkOutDate).format('dddd, DD MMMM, YYYY');
+
   useEffect(() => {
-    let data = JSON.parse(localStorage.getItem("login"));
-    setUser(data ? true : false);
+    let data = JSON.parse(localStorage.getItem('login'));
+
+    if (data) {
+      setUser(true);
+    } else {
+      setUser(false);
+    }
   }, []);
 
   const handleClick = () => {
-    if (user) {
-      alert("Congratulations! Your table has been reserved successfully.");
-      setReserve(!reserve);
-    } else {
-      alert("Please login first!");
-    }
+    // if (user) {
+    //   alert("Congratulations! Your table has been reserved successfully.");
+    //   setReserve(!reserve);
+    // } else {
+    //   alert("Please login first!");
+    // }
+    window.location.href = "/payment?id=";
   };
 
   return (
@@ -128,7 +141,7 @@ export const Availability = () => {
         <FlexDiv>
           <DataDiv>
             <p>Reservation Date</p>
-            <h1>Fri, Nov 3, 2024</h1>
+            <h1>{formattedCheckInDate}</h1>
             <Last>Available slots</Last>
           </DataDiv>
           <Line />
@@ -142,12 +155,14 @@ export const Availability = () => {
         <FlexDiv>
           <DataDiv>
             <p>Guests</p>
-            <h1>4 people</h1>
+            <h1>{props.people} people</h1>
           </DataDiv>
-
+          {/* <Payment /> */}
           <Button onClick={handleClick}>
             {!reserve ? "Reserve Table" : "Reserved"}
           </Button>
+          {/* <Payment /> */}
+          {/* <CheckoutForm /> */}
         </FlexDiv>
       </Cont>
     </Div>

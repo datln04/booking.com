@@ -91,15 +91,15 @@ box-shadow: 2px 2px 2px 2px #7c787849;
 } */
 `
 
-export function Searchbar({ setLoading, loading, suggestions, onChange, placeholder }) {
+export function Searchbar({ setLoading, loading, suggestions, onChange, placeholder, setSelectedLocation }) {
     const [q, setQ] = React.useState("");
     const [active, setActive] = React.useState(0);
     const scrollRef = React.useRef();
     const throttleText = useThrottle(q, 1000);
-    React.useEffect(() => {
-        onChange(throttleText);
-    }, [throttleText, onChange])
-    const handleInputChange = (e) => {
+    // React.useEffect(() => {
+    //     onChange(throttleText);
+    // }, [throttleText, onChange])
+    const handleInputChange = (e) => {        
         setQ(e.target.value);
         onChange(e.target.value);
 
@@ -155,6 +155,13 @@ export function Searchbar({ setLoading, loading, suggestions, onChange, placehol
 
         }
     }
+
+    const handleOnClick = () => {        
+        setQ(suggestions[active - 1]?.name);
+        setSelectedLocation(suggestions[active - 1]);
+        onChange("")     
+    }
+
     return <>
         <SearchBarWrapper onKeyUp={handleChangeActiveSuggestions}>
             {/* <IconImage src="https://image.flaticon.com/icons/png/512/49/49116.png" alt="icon" /> */}
@@ -171,8 +178,8 @@ export function Searchbar({ setLoading, loading, suggestions, onChange, placehol
         </SearchBarWrapper>
         {!loading && (<SuggestionBox ref={scrollRef} active={active} limit={5} len={suggestions.length}>
             {suggestions.map((item, index) => (
-                <div key={index} onMouseOver={() => setActive(index + 1)}>
-                    {item}
+                <div key={item?.id} onMouseOver={() => setActive(index + 1)} onClick={() => handleOnClick()}>
+                    {item?.name}
                 </div>
             ))}
         </SuggestionBox>

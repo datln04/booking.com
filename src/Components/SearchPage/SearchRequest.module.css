@@ -343,3 +343,8 @@ width: 40%;
 .left {
     width: 30%;
 }
+
+.suggestions {
+    left: 6%;
+    top: 44%;
+}

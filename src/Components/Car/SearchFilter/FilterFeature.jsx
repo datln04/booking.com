@@ -1,9 +1,8 @@
 import Switch from '@material-ui/core/Switch';
 import styles from "./FilterFeature.module.css";
 import { useEffect, useState } from 'react';
-import { carData } from '../../../Utils/mock';
 
-export const FilterFeature = ({ filterManufacturer, filterModel, filterYear, filterColor, filterFuelType, filterTransmission, filterSeatingCapacity, filterRentalPrice, filterAvailability, filterMileage, filterLocation }) => {
+export const FilterFeature = ({ carData, filterManufacturer, filterModel, filterYear, filterColor, filterFuelType, filterTransmission, filterSeatingCapacity, filterRentalPrice, filterAvailability, filterMileage, filterLocation }) => {
 
     const [manufacturerCounts, setManufacturerCounts] = useState({});
     const [modelCounts, setModelCounts] = useState({});
@@ -18,6 +17,8 @@ export const FilterFeature = ({ filterManufacturer, filterModel, filterYear, fil
     const [locationCounts, setLocationCounts] = useState({});
 
     useEffect(() => {
+        if (!carData) return;
+
         const countOccurrences = (key) => {
             return carData.reduce((acc, car) => {
                 acc[car[key]] = (acc[car[key]] || 0) + 1;
@@ -32,22 +33,24 @@ export const FilterFeature = ({ filterManufacturer, filterModel, filterYear, fil
         setFuelTypeCounts(countOccurrences('fuelType'));
         setTransmissionCounts(countOccurrences('transmission'));
         setSeatingCapacityCounts(countOccurrences('seatingCapacity'));
-        setRentalPriceCounts(countOccurrences('rentalPrice'));
-        setAvailabilityCounts(countOccurrences('availability'));
+        setRentalPriceCounts(countOccurrences('rentalPricePerDay'));
+        setAvailabilityCounts(countOccurrences('availabilityStatus'));
         setMileageCounts(countOccurrences('mileage'));
         setLocationCounts(countOccurrences('location'));
-    }, []);
+    }, [carData]);
 
     const handleFilter = (filterFunction) => (e) => {
         filterFunction(e.target.value);
     };
 
     const renderFilterOptions = (counts, filterFunction) => {
+        if (!counts) return null;
+
         return Object.entries(counts).map(([key, count]) => (
             <div key={key}>
                 <div>
-                <input type="radio" value={key} onChange={handleFilter(filterFunction)} name={filterFunction.name} />
-                <p>{key}</p>
+                    <input type="radio" value={key} onChange={handleFilter(filterFunction)} name={filterFunction.name} />
+                    <p>{key}</p>
                 </div>
                 <p>{count}</p>
             </div>
@@ -57,11 +60,6 @@ export const FilterFeature = ({ filterManufacturer, filterModel, filterYear, fil
     return (
         <div className={styles.filterFeatureContainer}>
             <h2 className={styles.header}>Filter by:</h2>
-
-            <div className={styles.filterSection}>
-                <h3>Manufacturer</h3>
-                {renderFilterOptions(manufacturerCounts, filterManufacturer)}
-            </div>
 
             <div className={styles.filterSection}>
                 <h3>Model</h3>

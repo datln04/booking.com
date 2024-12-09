@@ -230,38 +230,24 @@ export const TitleInfo = (props) => {
         }
     }
     return (
-
         <Container>
             <Cont>
                 <Info>
                     <NameDiv>
-
                         <P> {props.type}</P>
                         <Name>{props.name}</Name>
-
-
                     </NameDiv>
                     <Star num="5" />
                     <Thumb>
-
                         <ThumbUpAltIcon style={{ color: "#ffff", fontSize: 19 }} />
                     </Thumb>
-
                     <Map>
                         <RoomIcon style={{ color: "#3c79cf", marign: "0px" }} />
                         <MapInfo>{props.address}</MapInfo>
-
-
                     </Map>
-
                     <ShowMap>
                         Show map
-
                     </ShowMap>
-
-
-
-
                 </Info>
 
                 <RightDiv>
@@ -270,64 +256,43 @@ export const TitleInfo = (props) => {
                         <FavoriteBorderIcon style={{ color: "#3c79cf" }} />
                         <ShareIcon style={{ color: "#3c79cf", marginLeft: "10px" }} />
                         <Reserve>
-
                             <p onClick={handleClick}>
                                 {/* <Link to="/" style={{ color: "white", textDecoration: "none" }}> */}
                                 Reserve
                                 {/* </Link> */}
                             </p>
-
                         </Reserve>
-
-
                     </div>
 
                     <Tag>
                         <img src="https://cf.bstatic.com/static/img/bpg/bpg_logo_retina/b4785e81dfbdb3907f75887373d5920d3dc3b245.png" alt="tag" />
                         <p>We Price Match</p>
-
                     </Tag>
-
-
                 </RightDiv>
-
-
-
-
             </Cont>
             <ImageDiv>
-
                 <ShortImage style={{ gridArea: "short1" }}>
                     <img src={`${props.url_1}`} alt="check" />
                 </ShortImage>
                 <ShortImage style={{ gridArea: "short2" }}>
                     <img src={`${props.url_2}`} alt="check" />
-
                 </ShortImage>
                 <LargeImage style={{ gridArea: "long" }}>
                     <img src={`${props.url_3}`} alt="check" />
-
                 </LargeImage>
-
-
             </ImageDiv>
 
             <FlexDiv>
-
                 <ImageBox style={{ backgroundImage: `url(${props.url_5})` }} />
                 <ImageBox style={{ backgroundImage: `url(${props.url_6})` }} />
                 <ImageBox style={{ backgroundImage: `url(${props.url_7})` }} />
                 <ImageBox style={{ backgroundImage: `url(${props.url_8})` }} />
                 <ImageBox style={{ background: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),url(${props.img})` }}>
-                    <Text> <p>+32photos</p>
+                    <Text>
+                        {props?.total > 9 ? `+${props?.total}` : <ImageBox style={{ backgroundImage: `url(${props?.url_8})` }} />}
                     </Text>
                 </ImageBox>
-
-
-
-
             </FlexDiv>
-
         </Container>
     )
 }
