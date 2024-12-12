@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import moment from 'moment';
 import 'moment/locale/vi';
-import { loadStripe } from '@stripe/stripe-js';
-import Payment from '../../../../Utils/Payment';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { createData } from '../../../../Utils/Service';
 
 const Div = styled.div`
   width: 100%;
@@ -146,20 +145,39 @@ export const Availability = (props) => {
     let data = JSON.parse(localStorage.getItem('login'));
 
     if (data) {
-      setUser(true);
+      setUser(data);
     } else {
-      setUser(false);
+      setUser(null);
     }
   }, []);
 
-  const handleClick = () => {
+  const handleClick = (e) => {
     // if (user) {
     //   alert('Congratulations! Your room has been booked successfully');
     //   setReserve(!reserve);
     // } else {
     //   alert('Please login first!');
     // }
-    window.location.href = `/payment?RoomId=${props?.Id}&checkInDate=${props?.checkInDate}&checkOutDate=${props?.checkOutDate}&person=${props?.person}`;
+    // window.location.href = `/payment?serviceId=${props?.Id}&serviceType=Room&checkInDate=${props?.checkInDate}&checkOutDate=${props?.checkOutDate}&person=${props?.person}`;
+    e.preventDefault();
+    const infoToSave = {
+      email: user?.user?.email,
+      token: "tok_visa",
+      amount: props?.price,
+      bookingId: 0,
+      cardholderName: "John Doe",
+      userId: user?.user?.id,
+      serviceId: parseInt(props?.id),
+      serviceType: "Hotel",
+      checkInDate: props?.checkInDate,
+      checkOutDate: props?.checkOutDate,
+    }
+    localStorage.setItem('paymentInfo', JSON.stringify(infoToSave));
+    createData('/Payments/Paypal', infoToSave).then((resp) => {
+      if (resp) {
+        window.location.href = resp?.approvalUrl;
+      }
+    });
   };
 
   return (

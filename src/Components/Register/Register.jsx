@@ -106,6 +106,7 @@ const Register = () => {
       setIsLoading(false);
       window.location.href = '/login';
     }).catch(() => {
+      alert('Failed to register user');
       setIsLoading(false);
     });
   };

@@ -161,7 +161,7 @@ export const HotelDetails = () => {
 
                     <AllIcons />
 
-                    <Availability Id={param?.id} checkInDate={checkInDate} checkOutDate={checkOutDate} person={person}/>
+                    <Availability id={param?.id} checkInDate={checkInDate} checkOutDate={checkOutDate} person={person} price={showData?.price}/>
                     <Review serviceType={'Room'} data={showData}/>
                 </Div>
             </Wrapper>

@@ -14,9 +14,9 @@ import Attraction from "./Attraction"
 import { SearchAttractionPage } from "../Components/Attraction/SearchPage/SearchAttractionPage"
 import AttractionDetail from "../Components/Attraction/AttractionDetail/AttractionDetail"
 import Register from "../Components/Register/Register"
-import Completion from "../Utils/Completion"
-import StripePayment from "../Utils/StripePayment"
-import PaymentSuccess from "../Utils/PaymentSuccess"
+import Payment from "../Components/Payment/Payment"
+import BookingHistory from "../Components/BookingHistory/BookingHistory"
+
 
 export const Routes = () => {
 
@@ -76,9 +76,8 @@ export const Routes = () => {
             <Route path="/attraction/:id">
                 <AttractionDetail />
             </Route>
-
-            <Route path="/payment"><StripePayment /></Route>
-            <Route path="/success" element={<PaymentSuccess />} />
+            <Route path="/api/Payments/PaypalSuccess"><Payment /></Route>
+            <Route path="/booking-history"><BookingHistory /></Route>
         </Switch>
 
     </>

@@ -1,8 +1,6 @@
 import moment from 'moment';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import Payment from '../../../../../Utils/Payment';
-import CheckoutForm from '../../../../../Utils/CheckoutForm';
 
 const Div = styled.div`
   width: 100%;
@@ -157,12 +155,9 @@ export const Availability = (props) => {
             <p>Guests</p>
             <h1>{props.people} people</h1>
           </DataDiv>
-          {/* <Payment /> */}
           <Button onClick={handleClick}>
             {!reserve ? "Reserve Table" : "Reserved"}
           </Button>
-          {/* <Payment /> */}
-          {/* <CheckoutForm /> */}
         </FlexDiv>
       </Cont>
     </Div>

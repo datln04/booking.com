@@ -78,6 +78,7 @@ const Login = () => {
       window.location.href = '/';
     }).catch(() => {
       setIsLoading(false);
+      alert('Invalid username or password');
     });
   };
 
