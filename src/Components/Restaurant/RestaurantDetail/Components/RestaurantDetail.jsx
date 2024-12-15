@@ -135,6 +135,7 @@ export const RestaurantDetails = () => {
             setShowData(tmp);
         }
     }
+console.log(showData);
 
     return (
         <>

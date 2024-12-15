@@ -38,23 +38,23 @@ export const AllIcons = () => {
     <FlexDiv>
       <Cont>
         <LocalDiningIcon style={styles} />
-        <p>In-house dining</p>
+        <p>Ăn uống tại chỗ</p>
       </Cont>
       <Cont>
         <WifiIcon style={styles} />
-        <p>Free WiFi</p>
+        <p>WiFi miễn phí</p>
       </Cont>
       <Cont>
         <LocalParkingIcon style={styles} />
-        <p>Free parking</p>
+        <p>Đỗ xe miễn phí</p>
       </Cont>
       <Cont> 
         <AcUnitIcon style={styles} />
-        <p>Air conditioning</p>
+        <p>Điều hòa không khí</p>
       </Cont>
       <Cont> 
         <OutdoorGrillIcon style={styles} />
-        <p>Outdoor seating</p>
+        <p>Chỗ ngồi ngoài trời</p>
       </Cont>
     </FlexDiv>
   );

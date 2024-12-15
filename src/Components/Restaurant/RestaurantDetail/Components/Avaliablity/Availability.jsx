@@ -1,6 +1,8 @@
 import moment from 'moment';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import styled from 'styled-components';
+import { createData } from '../../../../../Utils/Service';
 
 const Div = styled.div`
   width: 100%;
@@ -100,13 +102,14 @@ const Tag = styled.div`
 export const Availability = (props) => {
   const [reserve, setReserve] = useState(false);
   const [user, setUser] = useState(false);
+  const {id} = useParams();
 
   moment.locale('vi');
   const formattedCheckInDate = moment(props?.checkInDate).format('dddd, DD MMMM, YYYY');
   const formattedCheckOutDate = moment(props?.checkOutDate).format('dddd, DD MMMM, YYYY');
+  let data = JSON.parse(localStorage.getItem('login'));
 
   useEffect(() => {
-    let data = JSON.parse(localStorage.getItem('login'));
 
     if (data) {
       setUser(true);
@@ -116,47 +119,65 @@ export const Availability = (props) => {
   }, []);
 
   const handleClick = () => {
-    // if (user) {
-    //   alert("Congratulations! Your table has been reserved successfully.");
-    //   setReserve(!reserve);
-    // } else {
-    //   alert("Please login first!");
-    // }
-    window.location.href = "/payment?id=";
+    if (data) {
+      const payload = {
+        id: 0,
+        customerId: data?.user?.id,
+        serviceType: "Restaurant",
+        serviceId: id,
+        bookingDate: new Date().toISOString(),
+        price: 0,
+        // paymentStatus: "UnPaid",
+        bookingStatus: "Confirmed",
+        checkInDate: props.checkInDate,
+        // checkOutDate: props.checkInDate,
+        isDeleted: false
+      };
+
+      createData('/Bookings', payload).then((res) => {
+        if(res){
+          window.location.href = '/booking-history'
+        }
+      });
+    } else {
+      alert("Please login first!");
+    }
   };
+
+
 
   return (
     <Div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <H1>Reservation Availability</H1>
+        <H1>Khả năng đặt chỗ</H1>
         <Tag>
           <img src="https://cf.bstatic.com/static/img/bpg/bpg_logo_retina/b4785e81dfbdb3907f75887373d5920d3dc3b245.png" alt="tag" />
-          <p>We Price Match</p>
+          <p>Chúng tôi khớp giá</p>
         </Tag>
       </div>
 
       <Cont>
         <FlexDiv>
           <DataDiv>
-            <p>Reservation Date</p>
+            <p>Ngày đặt chỗ</p>
             <h1>{formattedCheckInDate}</h1>
-            <Last>Available slots</Last>
+            <Last>Thời gian có sẵn</Last>
           </DataDiv>
           <Line />
 
           <DataDiv>
-            <p>Reservation Time</p>
+            <p>Thời gian đặt chỗ</p>
             <h1>7:30 PM</h1>
           </DataDiv>
         </FlexDiv>
 
         <FlexDiv>
           <DataDiv>
-            <p>Guests</p>
-            <h1>{props.people} people</h1>
+            <p>Số lượng khách</p>
+            <h1>{props.people} người</h1>
           </DataDiv>
           <Button onClick={handleClick}>
-            {!reserve ? "Reserve Table" : "Reserved"}
+            {!reserve ? "Đặt bàn" : "Đã đặt"}
           </Button>
         </FlexDiv>
       </Cont>

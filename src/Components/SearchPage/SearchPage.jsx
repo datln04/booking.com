@@ -197,6 +197,8 @@ export const SearchPage = () => {
         })
         setShowData(filteredData)
     }
+
+    
     return <>
         <div>
             <Navbar />

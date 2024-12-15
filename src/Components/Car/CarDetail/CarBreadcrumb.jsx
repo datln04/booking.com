@@ -43,20 +43,31 @@ const WarningMessage = styled.p`
 `;
 
 const CarBreadcrumb = ({ location, startTime, endTime }) => {
+  const formatDate = (date) => {
+    return new Date(date).toLocaleString('vi-VN', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
   return (
     <BreadcrumbContainer>
       <Row>
         <Block>
-          <Location>{location}</Location>
-          <Time>{startTime}</Time>
+          <Location>{location?.name}</Location>
+          <Time>{formatDate(startTime)}</Time>
         </Block>
         <Separator>></Separator>
         <Block>
-          <Location>{location}</Location>
-          <Time>{endTime}</Time>
+          <Location>{location?.name}</Location>
+          <Time>{formatDate(endTime)}</Time>
         </Block>
       </Row>
-      <WarningMessage>Bạn cần phải lấy xe trước {startTime}</WarningMessage>
+      <WarningMessage>Bạn cần phải lấy xe trước {formatDate(startTime)}</WarningMessage>
     </BreadcrumbContainer>
   );
 };

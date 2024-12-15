@@ -25,7 +25,6 @@ export const Profile = () => {
         // document.location.href = "https://booking-webapp-clone.herokuapp.com/"
 
     }
-    console.log(user);
 
     return <div>
         {

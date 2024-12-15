@@ -255,8 +255,6 @@ function SearchAttractionRequest() {
           return { id: item?.id, name: item?.name }
         });
       setSuggestions(out);
-      console.log(out);
-      // setLoading(false);
     }
   }, [query]);
 
@@ -273,7 +271,7 @@ function SearchAttractionRequest() {
       return date.toISOString();
     };
 
-    if (selectedLocation && initvalue && endvalue && adults && children) {
+    if (selectedLocation && initvalue && endvalue && adults) {
       window.location.href = `/searchAttraction?provinceId=${selectedLocation?.id}&checkInDate=${formatDate(pickupDate)}&adults=${adults}&children=${children}`;
     } else {
       alert("Please fill all fields");

@@ -118,6 +118,15 @@ export const SearchDeals = () => {
         }
     }
 
+    const handleInitDateChange = (date) => {
+        onInitChange(date);
+        setInitDate(false);
+    }
+
+    const handleEndDateChange = (date) => {
+        onEndChange(date);
+        setEndDate(false);
+    }
 
     return <div className={styles.main}>
 
@@ -207,7 +216,7 @@ export const SearchDeals = () => {
                             <div className={styles.calenderItem}>
                                 <p className={styles.datePicke}>Start Date</p>
                                 <Calendar
-                                    onChange={onInitChange}
+                                    onChange={handleInitDateChange}
                                     value={initvalue}
                                     className={styles.cal1}
                                 />
@@ -218,7 +227,7 @@ export const SearchDeals = () => {
                             <div className={styles.calenderItem2}>
                                 <p className={styles.datePicke}>End date</p>
                                 <Calendar
-                                    onChange={onEndChange}
+                                    onChange={handleEndDateChange}
                                     value={endvalue}
                                     className={styles.cal1}
 

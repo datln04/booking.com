@@ -139,32 +139,35 @@ export const HotelDetails = () => {
         })
         setShowData(filteredData)
     }
+
     return (
         <>
             <Navbar />
-            <Wrapper>
-                <SearchRequest filterSearch={filterSearch} />
-                <Div>
-                    <TopSection />
-                    <TitleInfo 
-                        total={showData?.thumbnails?.length}
-                        type="hotel" name={`${showData?.hotel?.name}`}
-                        address={`${showData?.hotel?.province?.name}`}
-                        url_1={`${showData?.image?.imageUrl}` || ''}
-                        url_2={`${showData?.thumbnails?.length >= 6 ? showData.thumbnails[showData.thumbnails.length - 6]?.imageUrl : ''}`}
-                        url_3={`${showData?.thumbnails?.length >= 5 ? showData.thumbnails[showData.thumbnails.length - 5]?.imageUrl : ''}`}
-                        url_5={`${showData?.thumbnails?.length >= 4 ? showData.thumbnails[showData.thumbnails.length - 4]?.imageUrl : ''}`}
-                        url_6={`${showData?.thumbnails?.length >= 3 ? showData.thumbnails[showData.thumbnails.length - 3]?.imageUrl : ''}`}
-                        url_7={`${showData?.thumbnails?.length >= 2 ? showData.thumbnails[showData.thumbnails.length - 2]?.imageUrl : ''}`}
-                        url_8={`${showData?.thumbnails?.length >= 1 ? showData.thumbnails[showData.thumbnails.length - 1]?.imageUrl : ''}`}
-                    />
+            {
+                showData && <Wrapper>
+                    <SearchRequest filterSearch={filterSearch} />
+                    <Div>
+                        <TopSection />
+                        <TitleInfo
+                            total={showData?.thumbnails?.length}
+                            type="hotel" name={`${showData?.hotel?.name}`}
+                            address={`${showData?.hotel?.province?.name}`}
+                            url_1={`${showData?.image?.imageUrl}` || ''}
+                            url_2={`${showData?.thumbnails?.length >= 6 ? showData.thumbnails[showData.thumbnails.length - 6]?.imageUrl : ''}`}
+                            url_3={`${showData?.thumbnails?.length >= 5 ? showData.thumbnails[showData.thumbnails.length - 5]?.imageUrl : ''}`}
+                            url_5={`${showData?.thumbnails?.length >= 4 ? showData.thumbnails[showData.thumbnails.length - 4]?.imageUrl : ''}`}
+                            url_6={`${showData?.thumbnails?.length >= 3 ? showData.thumbnails[showData.thumbnails.length - 3]?.imageUrl : ''}`}
+                            url_7={`${showData?.thumbnails?.length >= 2 ? showData.thumbnails[showData.thumbnails.length - 2]?.imageUrl : ''}`}
+                            url_8={`${showData?.thumbnails?.length >= 1 ? showData.thumbnails[showData.thumbnails.length - 1]?.imageUrl : ''}`}
+                        />
 
-                    <AllIcons />
+                        <AllIcons />
 
-                    <Availability id={param?.id} checkInDate={checkInDate} checkOutDate={checkOutDate} person={person} price={showData?.price}/>
-                    <Review serviceType={'Room'} data={showData}/>
-                </Div>
-            </Wrapper>
+                        <Availability id={param?.id} checkInDate={checkInDate} checkOutDate={checkOutDate} person={person} price={showData?.price} />
+                        <Review serviceType={'Room'} data={showData} />
+                    </Div>
+                </Wrapper>
+            }
             <FooterBlue />
 
         </>

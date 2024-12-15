@@ -56,6 +56,16 @@ export const SearchRequest = ({ filterSearch }) => {
         getData()
     }, [])
 
+    const handleInitDateChange = (date) => {
+        onInitChange(date);
+        setInitDate(false);
+    }
+
+    const handleEndDateChange = (date) => {
+        onEndChange(date);
+        setEndDate(false);
+    }
+
     const handleSearch = () => {
 
         const formatDate = (date) => {
@@ -226,7 +236,7 @@ export const SearchRequest = ({ filterSearch }) => {
                 intiDate &&
                 <div className={styles.calenderItem}>
                     <Calendar
-                        onChange={onInitChange}
+                        onChange={handleInitDateChange}
                         value={initvalue}
                         className={styles.cal1}
                     />
@@ -236,7 +246,7 @@ export const SearchRequest = ({ filterSearch }) => {
                 endDate &&
                 <div className={styles.calenderItem2}>
                     <Calendar
-                        onChange={onEndChange}
+                        onChange={handleEndDateChange}
                         value={endvalue}
                         className={styles.cal1}
 

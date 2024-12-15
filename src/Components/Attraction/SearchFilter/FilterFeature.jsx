@@ -3,6 +3,7 @@ import styles from "./FilterFeature.module.css";
 // import { attractions } from '../../../Utils/mock';
 
 export const FilterFeature = ({
+  maxPrice,
   filterData,
   filterLocation,
   filterRating,

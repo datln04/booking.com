@@ -3,6 +3,7 @@ import 'moment/locale/vi';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { createData } from '../../../../Utils/Service';
+import OrderConfirmation from '../../../../Utils/OrderConfirmation';
 
 const Div = styled.div`
   width: 100%;
@@ -140,9 +141,9 @@ export const Availability = (props) => {
   //   }
 
   // };
+  let data = JSON.parse(localStorage.getItem('login'))?.user;
 
   useEffect(() => {
-    let data = JSON.parse(localStorage.getItem('login'));
 
     if (data) {
       setUser(data);
@@ -151,33 +152,50 @@ export const Availability = (props) => {
     }
   }, []);
 
-  const handleClick = (e) => {
-    // if (user) {
-    //   alert('Congratulations! Your room has been booked successfully');
-    //   setReserve(!reserve);
-    // } else {
-    //   alert('Please login first!');
-    // }
-    // window.location.href = `/payment?serviceId=${props?.Id}&serviceType=Room&checkInDate=${props?.checkInDate}&checkOutDate=${props?.checkOutDate}&person=${props?.person}`;
-    e.preventDefault();
-    const infoToSave = {
-      email: user?.user?.email,
-      token: "tok_visa",
-      amount: props?.price,
-      bookingId: 0,
-      cardholderName: "John Doe",
-      userId: user?.user?.id,
-      serviceId: parseInt(props?.id),
-      serviceType: "Hotel",
-      checkInDate: props?.checkInDate,
-      checkOutDate: props?.checkOutDate,
+  const [isOrderConfirmationOpen, setOrderConfirmationOpen] = useState(false);
+
+  const order = {
+    id: 0,
+    customer: user,
+    serviceType: "TransportService",
+    bookingDate: new Date().toISOString(),
+    price: props?.price,
+    checkInDate: props?.checkInDate,
+    checkOutDate: props?.checkOutDate,
+  };
+
+  const handleOpenOrderConfirmation = () => {
+    if (user) {
+      setOrderConfirmationOpen(true);
+    } else {
+      alert("Vui lòng đăng nhập để đặt xe")
     }
-    localStorage.setItem('paymentInfo', JSON.stringify(infoToSave));
-    createData('/Payments/Paypal', infoToSave).then((resp) => {
+  };
+
+  const handleCloseOrderConfirmation = () => {
+    const checkIn = new Date(props?.checkInDate);
+    const checkOut = new Date(props?.checkOutDate);
+    const days = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+    const totalPrice = days * props?.price;
+    const payload = {
+      email: user?.email,
+      token: "tok_visa",
+      amount: totalPrice,
+      bookingId: 0,
+      cardholderName: "Transport Service",
+      userId: user?.id,
+      serviceId: props.id,
+      serviceType: "TransportService",
+      checkInDate: props.checkInDate,
+      checkOutDate: props.checkOutDate
+    }
+    localStorage.setItem('paymentInfo', JSON.stringify(payload));
+    createData('/Payments/Paypal', payload).then((resp) => {
       if (resp) {
         window.location.href = resp?.approvalUrl;
       }
     });
+    setOrderConfirmationOpen(false);
   };
 
   return (
@@ -217,9 +235,16 @@ export const Availability = (props) => {
             <p>Khách</p>
             <h1>{props.person} người lớn</h1>
           </DataDiv>
-          <Button onClick={handleClick}>
+          <Button onClick={handleOpenOrderConfirmation}>
             {!reserve ? 'Đặt phòng' : 'Đã đặt'}
           </Button>
+          {
+            order && <OrderConfirmation
+              isOpen={isOrderConfirmationOpen}
+              onClose={handleCloseOrderConfirmation}
+              order={order}
+            />
+          }
         </FelxDiv>
       </Cont>
     </Div>

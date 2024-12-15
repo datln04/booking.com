@@ -1,18 +1,47 @@
 import './home.css';
 
 
-import manchester from './image/manchester.png';
-import leeds from './image/leeds.png';
-import reading from './image/reading.png';
-import newcastle from './image/newcastle.png';
-import birmingam from './image/birmingam.png';
-
-
-
+import { useEffect, useState } from 'react';
+import { fetchFilteredData } from '../../Utils/Service';
 
 function FirstPage() {
+    const [data, setData] = useState(null)
+
+    useEffect(() => {
+        getdata()
+    }, []);
+
+    const getdata = async () => {
+        const filter = {
+            filters: [],
+            includes: [
+                "Hotels"
+            ],
+            logic: "string",
+            pageSize: 0,
+            pageNumber: 0,
+            all: true
+        }
+        fetchFilteredData('/Provinces', filter).then((res) => {
+            if (res) {
+                setData(res)
+            }
+        })
+    }
+
+    const handleClicked = (provicenId) => {
+        const formatDate = (date) => {
+            return date.toISOString();
+        };
+        const initvalue = new Date();
+        const endvalue = new Date(initvalue);
+        endvalue.setDate(initvalue.getDate() + 1);
+        window.location.href = `/search?provinceId=${provicenId}&checkInDate=${formatDate(initvalue)}&checkOutDate=${formatDate(endvalue)}&persons=${2}&rooms=${1}`;
+
+    }
+
     return (
-        <div>
+        data && <div>
 
             <div className="main">
 
@@ -56,22 +85,34 @@ function FirstPage() {
                 </div>
 
                 <div className="Cities">
-
-                    <div className="manchester">
-                        <img src={manchester} alt="avatar2" />
-                        <span className="headmanchester">Manchester</span>
-                        <p className="childmanchester">1,096 properties</p>
-                    </div>
-                    <div className="manchester">
-                        <span className="headmanchester">Leeds</span>
-                        <p className="childmanchester">276 properties</p>
-                        <img src={leeds} alt="avatar2" />
-                    </div>
-
+                    {
+                        data?.map((item, idx) => {
+                            if (idx < 2) {
+                                return <div className="manchester" onClick={() => handleClicked(item.id)}>
+                                    <img src={item?.image} alt="avatar2" />
+                                    <span className="headmanchester">{item.name}</span>
+                                    <p className="childmanchester">{item?.hotels?.length} phòng</p>
+                                </div>
+                            }
+                            return null
+                        })
+                    }
                 </div>
 
                 <div className="citythree">
-                    <div className="manchester">
+                    {
+                        data?.map((item, idx) => {
+                            if (idx >= 2) {
+                                return <div className="manchester" onClick={() => handleClicked(item.id)}>
+                                    <img src={item?.image} alt="avatar2" />
+                                    <span className="headmanchester">{item?.name} phòng</span>
+                                    <p className="childmanchester">{item?.hotels?.length} phòng</p>
+                                </div>
+                            }
+                            return null;
+                        })
+                    }
+                    {/* <div className="manchester">
                         <img src={reading} alt="avatar2" />
                         <span className="headmanchester">reading</span>
                         <p className="childmanchester">276 properties</p>
@@ -85,7 +126,7 @@ function FirstPage() {
                         <img src={birmingam} alt="avatar2" />
                         <span className="headmanchester">birmingam</span>
                         <p className="childmanchester">1,010 properties</p>
-                    </div>
+                    </div> */}
                 </div>
 
 

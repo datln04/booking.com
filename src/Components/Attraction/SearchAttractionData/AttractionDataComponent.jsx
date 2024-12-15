@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt, faStar, faClock, faDollarSign } from "@fortawesome/free-solid-svg-icons";
 import styles from "./AttractionDataComponent.module.css";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
 
 export const AttractionDataComponent = ({
   id,
@@ -18,6 +19,12 @@ export const AttractionDataComponent = ({
   isBooking
 }) => {
   const lab = "Chi tiết >";
+    const locations = useLocation(); // Get the location object
+    const queryParams = new URLSearchParams(locations.search);
+    const checkInDate = queryParams.get('checkInDate');
+    const adults = queryParams.get('adults');
+    const children = queryParams.get('children');
+    const provinceId = queryParams.get('provinceId');
   return (
     <div className={styles.maindiv}>
       <div className={styles.imgdiv}>
@@ -42,7 +49,7 @@ export const AttractionDataComponent = ({
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}>
         <div style={{ marginTop: "10px", textAlign: "right" }}>
           <p><FontAwesomeIcon icon={faDollarSign} /> Giá:<p>{`Người lớn $`}<b>{priceAdult}</b></p> Trẻ em {`$`}<b>{priceChild}</b></p>
-          {!isBooking && <Link to={`/attraction/${id}`}>
+          {!isBooking && <Link to={`/attraction/${id}?provinceId=${provinceId}&checkInDate=${checkInDate}&checkOutDate=${checkInDate}&adults=${adults}&children=${children}`} style={{ textDecoration: "none" }}>
             <button style={{ backgroundColor: "#0071C2", color: "white", border: "none", borderRadius: "3px", padding: "15px", marginTop: "10px", cursor: "pointer" }}>
               {lab}
             </button>

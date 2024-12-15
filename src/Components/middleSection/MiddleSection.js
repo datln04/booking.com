@@ -32,7 +32,7 @@ function MiddleSection() {
   return (
     <div className="App">
       <FirstPage />
-      <div className="corosel rec.rec-arrow:hover">
+      {/* <div className="corosel rec.rec-arrow:hover">
         <h2 className="browsH2">Các loại dịch vụ đang hiện hành</h2>
         <Carousel breakPoints={breakPoints} pagination={false} >
 
@@ -137,7 +137,7 @@ function MiddleSection() {
           </Item>
 
         </Carousel>
-      </div>
+      </div> */}
 
       <div>
       </div>

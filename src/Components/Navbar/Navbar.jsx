@@ -34,7 +34,32 @@ export const Navbar = () => {
     }, [])
 
 
-
+    useEffect(() => {
+        switch (location.pathname) {
+            case '/':
+            case '/search':
+            case location.pathname.match(/^\/search\/\d+$/)?.input:
+                setTabs(1);
+                break;
+            case '/car':
+            case '/searchCar':
+            case location.pathname.match(/^\/car\/\d+$/)?.input:
+                setTabs(4);
+                break;
+            case '/attraction':
+            case '/searchAttraction':
+            case location.pathname.match(/^\/attraction\/\d+$/)?.input:
+                setTabs(5);
+                break;
+            case '/restaurant':
+            case '/searchRestaurant':
+            case location.pathname.match(/^\/restaurant\/\d+$/)?.input:
+                setTabs(6);
+                break;
+            default:
+                setTabs(1);
+        }
+    }, [location.pathname]);
     return <>
         <div className={styles.main} >
             <div className={styles.navbarContainer}>

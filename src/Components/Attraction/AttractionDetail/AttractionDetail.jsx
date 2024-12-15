@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faStar, faCheck, faInfoCircle, faExclamationTriangle, faPhone, faEnvelope, faMapMarkerAlt, faCancel, faInfo } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faStar, faCheck, faInfoCircle, faExclamationTriangle, faPhone, faEnvelope, faMapMarkerAlt, faCancel, faInfo, faUser } from '@fortawesome/free-solid-svg-icons';
 import { attractions } from '../../../Utils/mock';
 import { Navbar } from '../../Navbar/Navbar';
 import Review from '../../Review/Review';
-import { fetchData, fetchFilteredData } from '../../../Utils/Service';
+import { createData, fetchData, fetchFilteredData } from '../../../Utils/Service';
+import { useLocation } from 'react-router-dom/cjs/react-router-dom';
+import OrderConfirmation from '../../../Utils/OrderConfirmation';
 // import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 
 const Container = styled.div`
@@ -144,9 +146,61 @@ const Button = styled.button`
 
 const AttractionDetail = () => {
   const { id } = useParams();
-  const attraction = attractions.find(attraction => attraction.id === parseInt(id));
+  const user = JSON.parse(localStorage.getItem('login'))?.user;
 
   const [data, setData] = useState(null);
+  const [isOrderConfirmationOpen, setOrderConfirmationOpen] = useState(false);
+  const location = useLocation(); // Get the location object
+  const queryParams = new URLSearchParams(location.search);
+  const checkInDate = queryParams.get('checkInDate');
+  const adults = queryParams.get('adults');
+  const children = queryParams.get('children');
+  const provinceId = queryParams.get('provinceId');
+
+  const order = {
+    id: 0,
+    customer: user,
+    serviceType: "Activity",
+    bookingDate: new Date().toISOString(),
+    price: ((data?.priceAdult * adults) + (children > 0 ? data?.priceChild * children : 0)),
+    checkInDate: checkInDate,
+    checkOutDate: checkInDate,
+    isCustom: true
+  };
+
+  const handleOpenOrderConfirmation = () => {
+    if (user) {
+      setOrderConfirmationOpen(true);
+    } else {
+      alert("Vui lòng đăng nhập để đặt xe")
+    }
+  };
+
+  const handleCloseOrderConfirmation = () => {
+    // const checkIn = new Date(checkInDate);
+    // const checkOut = new Date(checkInDate);
+    const days = 1;
+    const totalPrice = days * ((data?.priceAdult * adults) + (children > 0 ? data?.priceChild * children : 0));
+    const payload = {
+      email: user?.email,
+      token: "tok_visa",
+      amount: totalPrice,
+      bookingId: 0,
+      cardholderName: "Activity Service",
+      userId: user?.id,
+      serviceId: id,
+      serviceType: "Activity",
+      checkInDate: checkInDate,
+      checkOutDate: checkInDate
+    }
+    localStorage.setItem('paymentInfo', JSON.stringify(payload));
+    createData('/Payments/Paypal', payload).then((resp) => {
+      if (resp) {
+        window.location.href = resp?.approvalUrl;
+      }
+    });
+    setOrderConfirmationOpen(false);
+  };
 
   useEffect(() => {
     getData()
@@ -165,14 +219,15 @@ const AttractionDetail = () => {
         "LeisureActivitiesAdditionalInfos",
         "LeisureActivitiesRestrictions",
         "LeisureActivitiesAdditionalInfos.Info",
-        "LeisureActivitiesRestrictions.Restriction"
+        "LeisureActivitiesRestrictions.Restriction",
+        "Manager"
       ],
       logic: "string",
       pageSize: 0,
       pageNumber: 0,
       all: true
     }
-    const response = await fetchFilteredData(`/LeisureActivities/`, filter)
+    const response = await fetchFilteredData(`/LeisureActivities`, filter)
     if (response) {
       let tmp = { ...response[0] };
       const requestObject = {
@@ -243,68 +298,58 @@ const AttractionDetail = () => {
   if (!data) {
     return <div>...loading</div>;
   }
-
-  const {
-    title,
-    location,
-    rating,
-    reviews,
-    price,
-    duration,
-    highlights,
-    image,
-    thumbnails,
-    description,
-    restrictions,
-    includes,
-    additionalInfo,
-    contact
-  } = attraction;
+console.log(data);
 
   const RightContentComponent = ({ location, contact }) => (
     <RightContent>
       <ContactInfo>
         <h3>Thông tin liên hệ</h3>
         <ContactItem>
-          <FontAwesomeIcon icon={faPhone} /> {contact.phone}
+          <FontAwesomeIcon icon={faUser} /> {contact?.username}
         </ContactItem>
         <ContactItem>
           <FontAwesomeIcon icon={faEnvelope} /> {contact.email}
         </ContactItem>
         <ContactItem>
-          <FontAwesomeIcon icon={faMapMarkerAlt} /> {contact.address}
+          <FontAwesomeIcon icon={faMapMarkerAlt} /> {location}
         </ContactItem>
       </ContactInfo>
-      <Button onClick={() => alert('Booking functionality coming soon!')}>Book Here</Button>
+      <Button onClick={handleOpenOrderConfirmation}>Book Here</Button>
+      <OrderConfirmation
+        isOpen={isOrderConfirmationOpen}
+        onClose={handleCloseOrderConfirmation}
+        order={order}
+      />
     </RightContent>
   );
 
-  const formatKey = (key) => {
-    return key
-      .replace(/([A-Z])/g, ' $1') // Thêm khoảng trắng trước các chữ cái viết hoa
-      .replace(/^./, (str) => str.toUpperCase()); // Viết hoa chữ cái đầu
-  };
+  // const formatKey = (key) => {
+  //   return key
+  //     .replace(/([A-Z])/g, ' $1') // Thêm khoảng trắng trước các chữ cái viết hoa
+  //     .replace(/^./, (str) => str.toUpperCase()); // Viết hoa chữ cái đầu
+  // };
+
 
   return (
     <>
       <div style={{ marginBottom: '20px' }}>
         <Navbar />
       </div>
-      {data && <Container>
+      {data && data?.activityName ? <Container>
         <Title>{data?.activityName}</Title>
         <ImageSection>
-          <BigImage src={data?.image?.imageUrl} alt={title} />
+          <BigImage src={data?.image?.imageUrl} alt={data?.activityName} />
           <Thumbnails>
-            {data?.thumbnails.map((thumb, index) => {
-              if (index === 3 && thumbnails.length > 4) {
+            {data?.thumbnails?.map((thumb, index) => {
+              if (index === 3 && data?.thumbnails.length > 4) {
                 return (
                   <ThumbnailWrapper key={index}>
                     <Thumbnail src={thumb?.imageUrl} alt={thumb?.imageType} style={{ width: '100%', marginBottom: '0' }} />
-                    <ThumbnailText>+{thumbnails.length - 4}</ThumbnailText>
+                    <ThumbnailText>+{data?.thumbnails.length - 4}</ThumbnailText>
                   </ThumbnailWrapper>
                 );
               } else if (index <= 3) {
-                return <Thumbnail key={index} src={thumb?.imageUrl} alt={title} />;
+                return <Thumbnail key={index} src={thumb?.imageUrl} alt={data.activityName} />;
               }
               return null;
             })}
@@ -314,7 +359,7 @@ const AttractionDetail = () => {
           <LeftContent>
             <Duration>
               <div className='d-flex justify-content-between'>
-                <FontAwesomeIcon icon={faClock} /> <b>Thời lượng: {data?.duration}</b>
+                <FontAwesomeIcon icon={faClock} /> <b>Thời lượng: {data?.duration.replace(';', ' - ')}</b>
               </div>
             </Duration>
             <h2>Đánh giá của người dùng</h2>
@@ -339,10 +384,10 @@ const AttractionDetail = () => {
               </SectionTitle>
               <ul>
                 {data?.leisureActivitiesRestrictions?.map((r, index) => (
-                  <>
+                  <div>
                     <FontAwesomeIcon icon={faCancel} style={{ color: 'red', marginRight: '10px' }} />
                     {`${r?.restriction?.name}`}
-                  </>
+                  </div>
                 ))}
               </ul>
             </Section>
@@ -360,9 +405,10 @@ const AttractionDetail = () => {
               </ul>
             </Section>
           </LeftContent>
-          <RightContentComponent location={location} contact={contact} />
+          <RightContentComponent location={data?.locationCity} contact={data?.manager} />
         </ParentContent>
-      </Container>}
+      </Container>
+        : <div>Không tìm thấy dữ liệu</div>}
     </>
   );
 };

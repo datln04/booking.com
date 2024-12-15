@@ -12,6 +12,17 @@
 
 }
 
+.carDetailsContainer {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .carDetailItem {
+    flex: 1 1 50%; /* Adjusts the width to 50% of the container */
+    box-sizing: border-box;
+    padding: 10px;
+  }
+
 @media only screen and (max-width: 1300px) {
     .maindiv{
         width: 60%;
@@ -57,7 +68,7 @@
     justify-content: space-between;
 } */
 .datadiv > div{
-    width: 70%;
+    width: 140%;
     justify-content: space-between;
 }
 .datadiv > div > p{

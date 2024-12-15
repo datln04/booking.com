@@ -11,7 +11,8 @@ import CheckIcon from '@material-ui/icons/Check';
 import { faCheck, faClock, faUser, faWallet } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useLocation } from 'react-router-dom/cjs/react-router-dom';
-import { fetchFilteredData } from '../../../Utils/Service';
+import { createData, fetchData, fetchFilteredData } from '../../../Utils/Service';
+import OrderConfirmation from '../../../Utils/OrderConfirmation';
 
 const Container = styled.div`
   width: 80%;
@@ -72,6 +73,8 @@ function TabPanel(props) {
 }
 
 const CarDetail = () => {
+    const user = JSON.parse(localStorage.getItem('login'))?.user;
+
     const { id } = useParams();
     const [value, setValue] = React.useState(0);
 
@@ -80,10 +83,68 @@ const CarDetail = () => {
     const queryParams = new URLSearchParams(location.search);
     const checkInDate = queryParams.get('checkInDate');
     const checkOutDate = queryParams.get('checkOutDate');
+    const provinceId = queryParams.get('provinceId');
 
+    const [province, setProvince] = useState(null);
+    const [isOrderConfirmationOpen, setOrderConfirmationOpen] = useState(false);
+
+    const order = {
+        id: 0,
+        customer: user,
+        serviceType: "TransportService",
+        bookingDate: new Date().toISOString(),
+        price: showData?.rentalPricePerDay,
+        checkInDate: checkInDate,
+        checkOutDate: checkOutDate
+    };
+
+    const handleOpenOrderConfirmation = () => {
+        if (user) {
+            setOrderConfirmationOpen(true);
+        } else {
+            alert("Vui lòng đăng nhập để đặt xe")
+        }
+    };
+
+    const handleCloseOrderConfirmation = () => {
+        const checkIn = new Date(checkInDate);
+        const checkOut = new Date(checkOutDate);
+        const days = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+        const totalPrice = days * showData?.rentalPricePerDay;
+        const payload = {
+            email: user?.email,
+            token: "tok_visa",
+            amount: totalPrice,
+            bookingId: 0,
+            cardholderName: "Transport Service",
+            userId: user?.id,
+            serviceId: id,
+            serviceType: "Transport",
+            checkInDate: checkInDate,
+            checkOutDate: checkOutDate
+        }
+        localStorage.setItem('paymentInfo', JSON.stringify(payload));
+        createData('/Payments/Paypal', payload).then((resp) => {
+            if (resp) {
+                window.location.href = resp?.approvalUrl;
+            }
+        });
+        setOrderConfirmationOpen(false);
+    };
+    
     useEffect(() => {
         getData()
+        getProvince()
     }, [])
+
+    const getProvince = async () => {
+        fetchData(`/Provinces/${provinceId}`).then((response) => {
+            if (response) {
+                setProvince(response);
+            }
+        })
+    }
+
 
 
     const getData = async () => {
@@ -173,14 +234,14 @@ const CarDetail = () => {
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
-    };    
+    };
 
     return (
         <Container>
             <div style={{ marginBottom: '20px' }}>
                 <Navbar />
             </div>
-            <CarBreadcrumb startTime={'10:00 AM'} endTime={'1:00 PM'} location={'Thành phố Hồ Chí Minh'} />
+            <CarBreadcrumb startTime={checkInDate} endTime={checkOutDate} location={province} />
             {
                 showData && <CarDetailContainer>
                     <CarData>
@@ -200,8 +261,8 @@ const CarDetail = () => {
                             location={showData.location}
                             licensePlate={showData.licensePlate}
                             features={showData?.transportServiceFeatures}
-                            isBooking={false}
-                            url={showData.image.imageUrl}
+                            isBooking={true}
+                            url={showData?.image?.imageUrl}
                         />
                         <List>
                             <h2>Đã bao gồm trong giá</h2>
@@ -269,12 +330,17 @@ const CarDetail = () => {
                             <br />
                             Thẻ được chấp nhận: Mastercard, Visa, American Express
                         </TabPanel>
-                        <BookButton variant="contained" size="large">
+                        <BookButton variant="contained" size="large" onClick={handleOpenOrderConfirmation}>
                             Đặt xe tại đây
                         </BookButton>
+                        <OrderConfirmation
+                            isOpen={isOrderConfirmationOpen}
+                            onClose={handleCloseOrderConfirmation}
+                            order={order}
+                        />
                     </CarData>
                     <CarPriceBreakdownContainer>
-                        <CarPriceBreakdown price={showData?.rentalPricePerDay}/>
+                        <CarPriceBreakdown price={showData?.rentalPricePerDay} />
                     </CarPriceBreakdownContainer>
                 </CarDetailContainer>
             }

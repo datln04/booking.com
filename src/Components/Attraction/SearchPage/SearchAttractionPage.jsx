@@ -12,6 +12,7 @@ export const SearchAttractionPage = () => {
     const queryParams = new URLSearchParams(location.search);
     const [showData, setShowData] = useState([]);
     const [filterData, setFilterData] = useState([]);
+    const [maxPrice, setMaxPrice] = useState(0);
 
     // Extract parameters
     const provinceId = queryParams.get('provinceId');
@@ -72,6 +73,7 @@ export const SearchAttractionPage = () => {
         });
         if (data) {
             data = await Promise.all(data);
+            // getMaxPrice();
             setShowData(data);
             setFilterData(data);
         } else {
@@ -118,40 +120,42 @@ export const SearchAttractionPage = () => {
             <div>
                 <Navbar />
             </div>
-            <div className={styles.serachPageContainer}>
-                <div className={styles.left}>
-                    <FilterFeature
-                        filterData={filterData ? filterData : []}
-                        // filterLocation={filterLocation}
-                        filterRating={filterRating}
-                        filterReviewCount={filterReviewCount}
-                        filterAdultPrice={filterAdultPrice}
-                        filterChildPrice={filterChildPrice}
+            {
+                showData && <div className={styles.serachPageContainer}>
+                    <div className={styles.left}>
+                        <FilterFeature
+                            filterData={filterData ? filterData : []}
+                            // filterLocation={filterLocation}
+                            filterRating={filterRating}
+                            filterReviewCount={filterReviewCount}
+                            filterAdultPrice={filterAdultPrice}
+                            filterChildPrice={filterChildPrice}
                         // filterDuration={filterDuration}
                         // filterHighlights={filterHighlights}
-                    />
-                </div>
-
-                <div style={{ width: '90%' }}>
-                    {filterData && filterData?.length > 0 && filterData.map((experience) => (
-                        <AttractionDataComponent
-                            key={experience.id}
-                            id={experience.id}
-                            title={experience.activityName}
-                            location={experience.locationCity}
-                            rating={experience.rating}
-                            reviews={experience.reviews}
-                            priceAdult={experience.priceAdult}
-                            priceChild={experience.priceChild}
-                            duration={experience.duration}
-                            availabilityStatus={experience.availabilityStatus}
-                            image={experience.image}
-                            description={experience.description}
-                            isBooking={false}
                         />
-                    ))}
+                    </div>
+
+                    <div style={{ width: '90%' }}>
+                        {filterData && filterData?.length > 0 && filterData.map((experience) => (
+                            <AttractionDataComponent
+                                key={experience.id}
+                                id={experience.id}
+                                title={experience.activityName}
+                                location={experience.locationCity}
+                                rating={experience.rating}
+                                reviews={experience.reviews}
+                                priceAdult={experience.priceAdult}
+                                priceChild={experience.priceChild}
+                                duration={experience.duration}
+                                availabilityStatus={experience.availabilityStatus}
+                                image={experience.image}
+                                description={experience.description}
+                                isBooking={false}
+                            />
+                        ))}
+                    </div>
                 </div>
-            </div>
+            }
         </>
     );
 };
