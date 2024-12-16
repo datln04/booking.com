@@ -40,8 +40,8 @@ font-size: 15px;
 }
 
 .indianFlag img{
-border-radius: 50%;
-width: 25px;
+/* border-radius: 50%; */
+width: 50px;
 }
 .questionIcon{
     fill: white;

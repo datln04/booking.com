@@ -24,7 +24,7 @@ function FirstPage() {
         }
         fetchFilteredData('/Provinces', filter).then((res) => {
             if (res) {
-                setData(res)
+                setData(res?.slice(-5));
             }
         })
     }
@@ -53,8 +53,8 @@ function FirstPage() {
 
                         </div>
                         <div className="margin">
-                            <span>Rent a car</span>
-                            <p>Hundreds of cars and 24/7 customer <br /> service</p>
+                            <span>Thuê xe</span>
+                            <p>Hàng trăm xe và dịch vụ khách hàng 24/7</p>
                         </div>
                     </div>
 
@@ -64,8 +64,8 @@ function FirstPage() {
                                 <path d="M21 15.5L21 8" className="a"></path><path d="M4.5 15.5L4.5 8" className="a"></path><path d="M3 8L6 8" className="a"></path><path d="M9,15.5v-6a1.5,1.5,0,0,1,3,0v6" className="a"></path><path d="M9 12.5L12 12.5" className="a"></path><path d="M15 8L18 15.5" className="a"></path><path d="M18 8L15 15.5" className="a"></path><path d="M0.75 4.25L23.25 4.25" className="a"></path><path d="M0.75 19.25L23.25 19.25" className="a"></path></svg>
                         </div>
                         <div className="margin">
-                            <span>Book an airport taxi</span>
-                            <p>A driver will be waiting to get you to <br /> your stay</p>
+                            <span>Đặt taxi sân bay</span>
+                            <p>Tài xế sẽ chờ để đưa bạn đến nơi ở</p>
                         </div>
                     </div>
 
@@ -76,9 +76,9 @@ function FirstPage() {
                                 <circle cx="12" cy="3" r="2.25" className="cls-1"></circle><circle cx="19.5" cy="7.5" r="2.25" className="cls-1"></circle><circle cx="4.5" cy="7.5" r="2.25" className="cls-1"></circle><circle cx="19.5" cy="15" r="2.25" className="cls-1"></circle><circle cx="12" cy="11.25" r="2.25" className="cls-1"></circle><circle cx="4.5" cy="15" r="2.25" className="cls-1"></circle><path d="M18.123,16.779a8.251,8.251,0,0,1-3.385,2.256" className="cls-1"></path><path d="M20.1,9.669a8.335,8.335,0,0,1,.017,3.068" className="cls-1"></path><path d="M14.23,3.305a8.251,8.251,0,0,1,3.893,2.416" className="cls-1"></path><path d="M5.877,5.721A8.251,8.251,0,0,1,9.77,3.305" className="cls-1"></path><path d="M3.9,12.831a8.352,8.352,0,0,1,0-3.162" className="cls-1"></path><path d="M9.262,19.035A8.267,8.267,0,0,1,5.924,16.83" className="cls-1"></path><path d="M7.991,22.186a.75.75,0,0,0,.681,1.064h6.656a.75.75,0,0,0,.681-1.064l-3.328-8.25a.75.75,0,0,0-1.362,0Z" className="cls-1"></path></svg>
 
                         </div>
-                        <div className="margin">
-                            <span>Find things to do</span>
-                            <p>Instant confirmation, digital tickets <br /> and verified customer reviews</p>
+                        <div className="margin" style={{ width: "78%" }}>
+                            <span>Tìm các hoạt động</span>
+                            <p>Xác nhận ngay lập tức, vé điện tử và đánh giá khách hàng đã xác minh</p>
                         </div>
                     </div>
 
@@ -91,7 +91,7 @@ function FirstPage() {
                                 return <div className="manchester" onClick={() => handleClicked(item.id)}>
                                     <img src={item?.image} alt="avatar2" />
                                     <span className="headmanchester">{item.name}</span>
-                                    <p className="childmanchester">{item?.hotels?.length} phòng</p>
+                                    {/* <p className="childmanchester">{item?.hotels?.length} phòng</p> */}
                                 </div>
                             }
                             return null
@@ -105,30 +105,14 @@ function FirstPage() {
                             if (idx >= 2) {
                                 return <div className="manchester" onClick={() => handleClicked(item.id)}>
                                     <img src={item?.image} alt="avatar2" />
-                                    <span className="headmanchester">{item?.name} phòng</span>
-                                    <p className="childmanchester">{item?.hotels?.length} phòng</p>
+                                    <span className="headmanchester">{item?.name}</span>
+                                    {/* <p className="childmanchester">{item?.hotels?.length} phòng</p> */}
                                 </div>
                             }
                             return null;
                         })
                     }
-                    {/* <div className="manchester">
-                        <img src={reading} alt="avatar2" />
-                        <span className="headmanchester">reading</span>
-                        <p className="childmanchester">276 properties</p>
-                    </div>
-                    <div className="manchester">
-                        <img src={newcastle} alt="avatar2" />
-                        <span className="headmanchester">newcastle</span>
-                        <p className="childmanchester">381 properties</p>
-                    </div>
-                    <div className="manchester">
-                        <img src={birmingam} alt="avatar2" />
-                        <span className="headmanchester">birmingam</span>
-                        <p className="childmanchester">1,010 properties</p>
-                    </div> */}
                 </div>
-
 
             </div>
 

@@ -30,7 +30,7 @@ const OrderConfirmation = ({ isOpen, onClose, order }) => {
         <p><strong>Khách Hàng:</strong> {customer?.fullName}</p>
         <p><strong>Loại Dịch Vụ:</strong> {serviceType}</p>
         <p><strong>Ngày Đặt:</strong> {new Date(bookingDate).toLocaleString()}</p>
-        {isCustom ? <p><strong>Giá:</strong> ${price} cho 1 ngày</p> : <p><strong>Giá:</strong> ${totalPrice} cho {days} ngày</p>}
+        {isCustom ? <p><strong>Giá:</strong> VND {price} cho 1 ngày</p> : <p><strong>Giá:</strong> ${totalPrice} cho {days} ngày</p>}
         <p><strong>Ngày Nhận Xe:</strong> {checkIn.toLocaleString()}</p>
         <p><strong>Ngày Trả Xe:</strong> {checkOut.toLocaleString()}</p>
       </DialogContent>

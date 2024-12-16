@@ -57,7 +57,7 @@ export const CarDataComponent = ({
       </div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ marginTop: "10px", textAlign: "right" }}>
-          <p><FontAwesomeIcon icon={faDollarSign} /> {`Giá thuê 1 ngày: `}<p>{`$${rentalPricePerDay}`}</p></p>
+          <p><FontAwesomeIcon icon={faDollarSign} /> {`Giá thuê 1 ngày: `}<p>{`VND${rentalPricePerDay}`}</p></p>
           {!isBooking && <Link to={`/car/${id}?provinceId=${provinceId}&checkInDate=${checkInDate}&checkOutDate=${checkOutDate}`}>
             <button style={{ backgroundColor: "#0071C2", color: "white", border: "none", borderRadius: "3px", padding: "15px", marginTop: "10px", cursor: "pointer" }}>
               {lab}

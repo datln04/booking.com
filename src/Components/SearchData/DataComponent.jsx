@@ -101,7 +101,7 @@ const DataComponent = ({
             <span
               style={{ fontSize: "22px", fontWeight: "600" }}
             >
-              $ {price}
+              VND {price}
             </span>
           </p>
           <p

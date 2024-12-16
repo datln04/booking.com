@@ -362,11 +362,11 @@ console.log(data);
                 <FontAwesomeIcon icon={faClock} /> <b>Thời lượng: {data?.duration.replace(';', ' - ')}</b>
               </div>
             </Duration>
-            <h2>Đánh giá của người dùng</h2>
+            {/* <h2>Đánh giá của người dùng</h2>
             <Rating>
               <FontAwesomeIcon icon={faStar} /> {data?.rating} ({data?.reviews} đánh giá)
             </Rating>
-            <Review />
+            <Review /> */}
             <Section>
               <SectionTitle>Những gì bao gồm</SectionTitle>
               <ul>

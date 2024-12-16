@@ -42,13 +42,13 @@ export const AttractionDataComponent = ({
           Trạng thái: {availabilityStatus}
         </h5>
         <p>{description}</p>
-        <div style={{ marginTop: "10px" }}>
+        {/* <div style={{ marginTop: "10px" }}>
           <p style={{ color: "orange", fontSize: "1.5em" }}><FontAwesomeIcon icon={faStar} /> {`Đánh giá: ${rating} (${reviews} nhận xét)`}</p>
-        </div>
+        </div> */}
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}>
         <div style={{ marginTop: "10px", textAlign: "right" }}>
-          <p><FontAwesomeIcon icon={faDollarSign} /> Giá:<p>{`Người lớn $`}<b>{priceAdult}</b></p> Trẻ em {`$`}<b>{priceChild}</b></p>
+          <p><FontAwesomeIcon icon={faDollarSign} /> Giá:<p>{`Người lớn VND`}<b>{priceAdult}</b></p> Trẻ em {`VND`}<b>{priceChild}</b></p>
           {!isBooking && <Link to={`/attraction/${id}?provinceId=${provinceId}&checkInDate=${checkInDate}&checkOutDate=${checkInDate}&adults=${adults}&children=${children}`} style={{ textDecoration: "none" }}>
             <button style={{ backgroundColor: "#0071C2", color: "white", border: "none", borderRadius: "3px", padding: "15px", marginTop: "10px", cursor: "pointer" }}>
               {lab}

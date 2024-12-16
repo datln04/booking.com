@@ -182,10 +182,10 @@ export const Availability = (props) => {
       token: "tok_visa",
       amount: totalPrice,
       bookingId: 0,
-      cardholderName: "Transport Service",
+      cardholderName: "Hotel",
       userId: user?.id,
       serviceId: props.id,
-      serviceType: "TransportService",
+      serviceType: "Hotel",
       checkInDate: props.checkInDate,
       checkOutDate: props.checkOutDate
     }
